@@ -38,7 +38,6 @@ ucompress.css = (source, dest) => new Promise((res, rej) => {
     else {
       // csso apparently has no way to detect errors
       writeFile(dest, csso.minify(data).css, err => {
-        /* istanbul ignore next */
         err ? rej(err) : res(dest);
       });
     }
@@ -64,7 +63,6 @@ ucompress.html = (source, dest) => new Promise((res, rej) => {
     else {
       try {
         writeFile(dest, html.minify(data.toString(), htmlArgs), err => {
-          /* istanbul ignore next */
           err ? rej(err) : res(dest);
         });
       }
@@ -93,7 +91,6 @@ ucompress.js = (source, dest) => new Promise((res, rej) => {
         rej(error);
       else {
         writeFile(dest, code, err => {
-          /* istanbul ignore next */
           err ? rej(err) : res(dest);
         });
       }
@@ -122,7 +119,6 @@ ucompress.svg = (source, dest) => new Promise((res, rej) => {
       svgo.optimize(data).then(
         ({data}) => {
           writeFile(dest, data, err => {
-            /* istanbul ignore next */
             err ? rej(err) : res(dest);
           });
         },
