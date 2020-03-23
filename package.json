@@ -7,9 +7,18 @@
     "build": "npm run cjs && npm run test",
     "cjs": "ascjs --no-default esm cjs",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "test": "nyc node test/index.js"
+    "test": "mkdir -p test/dest && nyc node test/index.js"
   },
-  "keywords": ["minify", "compress", "html", "css", "svg", "png", "jpg", "gif"],
+  "keywords": [
+    "minify",
+    "compress",
+    "html",
+    "css",
+    "svg",
+    "png",
+    "jpg",
+    "gif"
+  ],
   "author": "Andrea Giammarchi",
   "license": "ISC",
   "devDependencies": {
@@ -32,5 +41,13 @@
     "pngquant-bin": "^5.0.2",
     "svgo": "^1.3.2",
     "uglify-es": "^3.3.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/ucompress.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/ucompress/issues"
+  },
+  "homepage": "https://github.com/WebReflection/ucompress#readme"
 }
