@@ -44,7 +44,7 @@ const brotli = (source, mode) => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest, true));
+        writeFileSync(dest + '.etag', etag(dest));
         res();
       }
     }
@@ -64,14 +64,14 @@ const deflate = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest, true));
+        writeFileSync(dest + '.etag', etag(dest));
         res();
       }
     }
   );
 });
 
-const etag = (source, binary) => {
+const etag = source => {
   const file = readFileSync(source);
   return `"${
     file.length.toString(16)
@@ -80,8 +80,6 @@ const etag = (source, binary) => {
       .update(file, 'utf8')
       .digest('base64')
       .substring(0, 27)
-  }-${
-    binary ? 'b' : 'a'
   }"`;
 };
 
@@ -98,17 +96,18 @@ const gzip = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest, true));
+        writeFileSync(dest + '.etag', etag(dest));
         res();
       }
     }
   );
 });
 
-module.exports = (source, mode) => Promise.all([
-  brotli(source, mode),
-  deflate(source),
-  gzip(source)
-]).then(() => {
-  writeFileSync(source + '.etag', etag(source, false));
-});
+module.exports = (source, mode) => {
+  writeFileSync(source + '.etag', etag(source));
+  return Promise.all([
+    brotli(source, mode),
+    deflate(source),
+    gzip(source)
+  ]);
+};
