@@ -106,7 +106,7 @@ const gzip = source => new Promise((res, rej) => {
   );
 });
 
-const headers = source => {
+export const headers = source => {
   const {mtimeMs, size} = statSync(source);
   return JSON.stringify({
     'content-type': mime.lookup(
@@ -118,7 +118,7 @@ const headers = source => {
   });
 };
 
-export default (source, mode) => {
+export const compress = (source, mode) => {
   writeFileSync(source + '.json', headers(source));
   return Promise.all([
     brotli(source, mode),

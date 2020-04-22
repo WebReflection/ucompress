@@ -117,8 +117,9 @@ const headers = source => {
     'last-modified': new Date(mtimeMs).toUTCString()
   });
 };
+exports.headers = headers;
 
-module.exports = (source, mode) => {
+const compress = (source, mode) => {
   writeFileSync(source + '.json', headers(source));
   return Promise.all([
     brotli(source, mode),
@@ -126,3 +127,4 @@ module.exports = (source, mode) => {
     gzip(source)
   ]);
 };
+exports.compress = compress;

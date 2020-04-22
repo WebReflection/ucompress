@@ -26,7 +26,14 @@ const uglifyArgs = {output: {comments: /^!/}};
 
 const SVGO = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('svgo'));
 
-const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
+const {compress, headers} = require('./compress.js');
+
+const writeHeaders = (dest, res, rej) => {
+  writeFile(dest + '.json', headers(dest), err => {
+    /* istanbul ignore next */
+    err ? rej(err) : res(dest);
+  });
+};
 
 /**
  * Create a file after minifying or optimizing it, when possible.
@@ -81,7 +88,7 @@ ucompress.copy = (source, dest) => new Promise((res, rej) => {
           compress(dest, 'font').then(() => res(dest), rej);
           break;
         default:
-          res(dest);
+          writeHeaders(dest, res, rej);
           break;
       }
     }
@@ -96,7 +103,10 @@ ucompress.copy = (source, dest) => new Promise((res, rej) => {
  */
 ucompress.gif = (source, dest) => new Promise((res, rej) => {
   execFile(gifsicle, ['-o', dest, source], err => {
-    err ? rej(err) : res(dest);
+    if (err)
+      rej(err);
+    else
+      writeHeaders(dest, res, rej);
   });
 });
 
@@ -131,7 +141,10 @@ ucompress.html = (source, dest) => new Promise((res, rej) => {
  */
 ucompress.jpg = (source, dest) => new Promise((res, rej) => {
   execFile(jpegtran, jpegtranArgs.concat(dest, source), err => {
-    err ? rej(err) : res(dest);
+    if (err)
+      rej(err);
+    else
+      writeHeaders(dest, res, rej);
   });
 });
 
@@ -176,11 +189,14 @@ ucompress.png = (source, dest) => new Promise((res, rej) => {
   execFile(pngquant, pngquantArgs.concat(dest, source), err => {
     if (err) {
       copyFile(source, dest, err => {
-        err ? rej(err) : res(dest);
+        if (err)
+          rej(err);
+        else
+          writeHeaders(dest, res, rej);
       });
     }
     else
-      res(dest);
+      writeHeaders(dest, res, rej);
   });
 });
 
