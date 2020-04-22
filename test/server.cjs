@@ -2,28 +2,34 @@ const {createReadStream, readFile} = require('fs');
 const {createServer} = require('http');
 const {extname, join} = require('path');
 
-const ucompress = require('../cjs');
+const {encoded} = require('../cjs');
 
 const {parse} = JSON;
 
 const FOLDER = join(__dirname, 'dest');
 
 createServer((req, res) => {
-  let asset = join(FOLDER, req.url.split('?')[0]);
-  const ext = extname(asset);
+  const {url} = req;
+  const q = url.indexOf('?');
+  let asset = join(FOLDER, q < 0 ? url : url.slice(0, q));
+  const compressed = encoded.includes(extname(asset));
   const {
-    ['accept-encoding']: acceptEncoding,
-    ['if-modified-since']: ifModifiedSince,
-    ['if-none-match']: ifNoneMatch
+    ['accept-encoding']: AcceptEncoding,
+    ['if-modified-since']: IfModifiedSince,
+    ['if-none-match']: IfNoneMatch
   } = req.headers;
-  if (ucompress.encoded.includes(ext)) {
-    const encoding = (acceptEncoding || '').split(/,\s*/);
-    if (encoding.includes('br'))
-      asset += '.br';
-    else if (encoding.includes('gzip'))
-      asset += '.gzip';
-    else if (encoding.includes('deflate'))
-      asset += '.deflate';
+  if (compressed) {
+    switch (true) {
+      case /\bbr\b/.test(AcceptEncoding):
+        asset += '.br';
+        break;
+      case /\bgzip\b/.test(AcceptEncoding):
+        asset += '.gzip';
+        break;
+      case /\bdeflate\b/.test(AcceptEncoding):
+        asset += '.deflate';
+        break;
+    }
   }
   readFile(asset + '.json', (err, data) => {
     if (err) {
@@ -33,7 +39,7 @@ createServer((req, res) => {
     else {
       const headers = parse(data);
       const {Etag, ['Last-Modified']: LastModified} = headers;
-      if (Etag === ifNoneMatch && LastModified === ifModifiedSince) {
+      if (Etag === IfNoneMatch && LastModified === IfModifiedSince) {
         res.writeHead(304, {'Last-Modified': LastModified});
         res.end();
       }
