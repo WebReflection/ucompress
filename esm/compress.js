@@ -1,4 +1,8 @@
-import {createReadStream, createWriteStream, statSync} from 'fs';
+import {createHash} from 'crypto';
+import {
+  createReadStream, createWriteStream,
+  statSync, readFileSync, writeFileSync
+} from 'fs';
 import {pipeline} from 'stream';
 import zlib from 'zlib';
 
@@ -20,6 +24,7 @@ const {
 } = zlib;
 
 const brotli = (source, mode) => new Promise((res, rej) => {
+  const dest = source + '.brotli';
   pipeline(
     createReadStream(source),
     createBrotliCompress({
@@ -33,38 +38,69 @@ const brotli = (source, mode) => new Promise((res, rej) => {
             BROTLI_MODE_GENERIC
         )
     }),
-    createWriteStream(source + '.brotli'),
+    createWriteStream(dest),
     err => {
       /* istanbul ignore next */
-      err ? rej(err) : res();
+      if (err)
+        rej(err);
+      else {
+        writeFileSync(dest + '.etag', etag(dest, true));
+        res();
+      }
     }
   );
 });
 
 const deflate = source => new Promise((res, rej) => {
+  const dest = source + '.deflate';
   pipeline(
     createReadStream(source),
     createDeflate({
       level: Z_BEST_COMPRESSION
     }),
-    createWriteStream(source + '.deflate'),
+    createWriteStream(dest),
     err => {
       /* istanbul ignore next */
-      err ? rej(err) : res();
+      if (err)
+        rej(err);
+      else {
+        writeFileSync(dest + '.etag', etag(dest, true));
+        res();
+      }
     }
   );
 });
 
+const etag = (source, binary) => {
+  const file = readFileSync(source);
+  return `"${
+    file.length.toString(16)
+  }-${
+    createHash('sha1')
+      .update(file, 'utf8')
+      .digest('base64')
+      .substring(0, 27)
+  }-${
+    binary ? 'b' : 'a'
+  }"`;
+};
+
 const gzip = source => new Promise((res, rej) => {
+  const dest = source + '.gzip';
   pipeline(
     createReadStream(source),
     createGzip({
       level: Z_BEST_COMPRESSION
     }),
-    createWriteStream(source + '.gzip'),
+    createWriteStream(dest),
     err => {
       /* istanbul ignore next */
-      err ? rej(err) : res();
+      if (err)
+        rej(err);
+      else {
+        writeFileSync(dest + '.etag', etag(dest, true));
+        res();
+      }
     }
   );
 });
@@ -73,4 +109,6 @@ export default (source, mode) => Promise.all([
   brotli(source, mode),
   deflate(source),
   gzip(source)
-]);
+]).then(() => {
+  writeFileSync(source + '.etag', etag(source, false));
+});

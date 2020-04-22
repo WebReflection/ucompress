@@ -28,9 +28,11 @@ ucompress.copy(source, dest).then(dest => console.log(dest));
   * **png** files via [pngquant-bin](https://www.npmjs.com/package/pngquant-bin)
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
 
+Each file will automatically generate its own related [RFC-7232](https://tools.ietf.org/html/rfc7232) compliant `.etag` file.
+
 ### Brotli, Deflate, and GZip
 
-The following kind of file extensions will automatically create their `.brotli`, `.deflate`, and `.gzip` version in the destination folder.
+The following kind of file extensions will automatically create their `.brotli`, `.deflate`, and `.gzip` version in the destination folder, plus their own `.etag` file, per each different compression.
 
   * **.css**
   * **.html**
