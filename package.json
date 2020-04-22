@@ -22,10 +22,10 @@
   "author": "Andrea Giammarchi",
   "license": "ISC",
   "devDependencies": {
-    "ascjs": "^3.1.2",
-    "coveralls": "^3.0.11",
+    "ascjs": "^4.0.0",
+    "coveralls": "^3.0.13",
     "essential-md": "^0.3.0",
-    "nyc": "^15.0.0"
+    "nyc": "^15.0.1"
   },
   "module": "./esm/index.js",
   "type": "module",
@@ -34,7 +34,7 @@
     "default": "./cjs/index.js"
   },
   "dependencies": {
-    "csso": "^4.0.2",
+    "csso": "^4.0.3",
     "gifsicle": "^5.0.0",
     "html-minifier": "^4.0.0",
     "jpegtran-bin": "^4.0.0",

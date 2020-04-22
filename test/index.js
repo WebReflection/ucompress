@@ -14,7 +14,7 @@ readdir(join(__dirname, 'source'), (_, files) => {
       join(__dirname, 'source', file),
       join(__dirname, 'dest', file)
     )
-    .then(dest => ok(basename(dest)))
+    .then(dest => ok(`\`${basename(dest)}\``))
     .catch(err => {
       error`\`\`\`${err}\`\`\``;
       process.exit(1);

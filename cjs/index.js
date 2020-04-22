@@ -26,6 +26,8 @@ const uglifyArgs = {output: {comments: /^!/}};
 
 const SVGO = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('svgo'));
 
+const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
+
 /**
  * Create a file after minifying or optimizing it, when possible.
  * @param {string} source The source file to optimize.
@@ -50,7 +52,7 @@ ucompress.css = (source, dest) => new Promise((res, rej) => {
     else {
       // csso apparently has no way to detect errors
       writeFile(dest, csso.minify(data).css, err => {
-        err ? rej(err) : res(dest);
+        err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
       });
     }
   });
@@ -64,7 +66,25 @@ ucompress.css = (source, dest) => new Promise((res, rej) => {
  */
 ucompress.copy = (source, dest) => new Promise((res, rej) => {
   copyFile(source, dest, err => {
-    err ? rej(err) : res(dest);
+    if (err)
+      rej(err);
+    else {
+      switch (extname(source)) {
+        /* istanbul ignore next */
+        case '.csv':
+          /* istanbul ignore next */
+        case '.md':
+        case '.txt':
+          compress(dest, 'text').then(() => res(dest), rej);
+          break;
+        case '.woff2':
+          compress(dest, 'font').then(() => res(dest), rej);
+          break;
+        default:
+          res(dest);
+          break;
+      }
+    }
   });
 });
 
@@ -93,7 +113,7 @@ ucompress.html = (source, dest) => new Promise((res, rej) => {
     else {
       try {
         writeFile(dest, html.minify(data.toString(), htmlArgs), err => {
-          err ? rej(err) : res(dest);
+          err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
         });
       }
       catch (error) {
@@ -139,7 +159,7 @@ ucompress.js = (source, dest) => new Promise((res, rej) => {
         rej(error);
       else {
         writeFile(dest, code, err => {
-          err ? rej(err) : res(dest);
+          err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
         });
       }
     }
@@ -179,7 +199,7 @@ ucompress.svg = (source, dest) => new Promise((res, rej) => {
       svgo.optimize(data).then(
         ({data}) => {
           writeFile(dest, data, err => {
-            err ? rej(err) : res(dest);
+            err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
           });
         },
         rej

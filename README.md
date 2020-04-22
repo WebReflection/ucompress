@@ -28,4 +28,16 @@ ucompress.copy(source, dest).then(dest => console.log(dest));
   * **png** files via [pngquant-bin](https://www.npmjs.com/package/pngquant-bin)
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
 
-Incompatible files will fallback as regular copy `source` into `dest` when the module is used as callback.
+### Brotli, Deflate, and GZip
+
+The following kind of file extensions will automatically create their `.brotli`, `.deflate`, and `.gzip` version in the destination folder.
+
+  * **.css**
+  * **.html**
+  * **.js**
+  * **.md**
+  * **.svg**
+  * **.txt**
+  * **.woff2**
+
+Incompatible files will fallback as regular copy `source` into `dest` when the module is used as callback, without creating any optimized version.
