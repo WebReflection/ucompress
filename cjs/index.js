@@ -36,30 +36,40 @@ const writeHeaders = (dest, res, rej) => {
 };
 
 /**
+ * @typedef {object} Options - Options to deal with extra computation.
+ * @prop {boolean} createFiles - If `true`, create brotli, gzip, etc.
+ */
+
+/**
  * Create a file after minifying or optimizing it, when possible.
  * @param {string} source The source file to optimize.
  * @param {string} dest The optimized destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-const ucompress = (source, dest) => {
+const ucompress = (source, dest, options = {}) => {
   const method = extname(source).toLowerCase().slice(1);
-  return (ucompress[method] || ucompress.copy)(source, dest);
+  return (ucompress[method] || ucompress.copy)(source, dest, options);
 };
 
 /**
  * Create a file after minifying via `csso`.
  * @param {string} source The source CSS file to minify.
  * @param {string} dest The minified destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-ucompress.css = (source, dest) => new Promise((res, rej) => {
+ucompress.css = (source, dest, options = {}) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
     else {
       // csso apparently has no way to detect errors
       writeFile(dest, csso.minify(data).css, err => {
-        err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
+        if (err)
+          rej(err);
+        else
+          compress(dest, 'text', options).then(() => res(dest), rej);
       });
     }
   });
@@ -69,9 +79,14 @@ ucompress.css = (source, dest) => new Promise((res, rej) => {
  * Copy a source file into a destination.
  * @param {string} source The source file to copy.
  * @param {string} dest The destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-ucompress.copy = (source, dest) => new Promise((res, rej) => {
+ucompress.copy = (
+  source,
+  dest,
+  /* istanbul ignore next */ options = {}
+) => new Promise((res, rej) => {
   copyFile(source, dest, err => {
     if (err)
       rej(err);
@@ -82,10 +97,10 @@ ucompress.copy = (source, dest) => new Promise((res, rej) => {
           /* istanbul ignore next */
         case '.md':
         case '.txt':
-          compress(dest, 'text').then(() => res(dest), rej);
+          compress(dest, 'text', options).then(() => res(dest), rej);
           break;
         case '.woff2':
-          compress(dest, 'font').then(() => res(dest), rej);
+          compress(dest, 'font', options).then(() => res(dest), rej);
           break;
         default:
           writeHeaders(dest, res, rej);
@@ -114,16 +129,20 @@ ucompress.gif = (source, dest) => new Promise((res, rej) => {
  * Create a file after minifying it via `html-minifier`.
  * @param {string} source The source HTML file to minify.
  * @param {string} dest The minified destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-ucompress.html = (source, dest) => new Promise((res, rej) => {
+ucompress.html = (source, dest, options) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
     else {
       try {
         writeFile(dest, html.minify(data.toString(), htmlArgs), err => {
-          err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
+          if (err)
+            rej(err);
+          else
+            compress(dest, 'text', options).then(() => res(dest), rej);
         });
       }
       catch (error) {
@@ -160,9 +179,10 @@ ucompress.jpeg = ucompress.jpg;
  * Create a file after minifying it via `uglify-es`.
  * @param {string} source The source JS file to minify.
  * @param {string} dest The minified destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-ucompress.js = (source, dest) => new Promise((res, rej) => {
+ucompress.js = (source, dest, options = {}) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
@@ -172,7 +192,10 @@ ucompress.js = (source, dest) => new Promise((res, rej) => {
         rej(error);
       else {
         writeFile(dest, code, err => {
-          err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
+          if (err)
+            rej(err);
+          else
+            compress(dest, 'text', options).then(() => res(dest), rej);
         });
       }
     }
@@ -204,9 +227,10 @@ ucompress.png = (source, dest) => new Promise((res, rej) => {
  * Create a file after minifying it via `svgo`.
  * @param {string} source The source SVG file to minify.
  * @param {string} dest The minified destination file.
+ * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-ucompress.svg = (source, dest) => new Promise((res, rej) => {
+ucompress.svg = (source, dest, options = {}) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
@@ -215,7 +239,10 @@ ucompress.svg = (source, dest) => new Promise((res, rej) => {
       svgo.optimize(data).then(
         ({data}) => {
           writeFile(dest, data, err => {
-            err ? rej(err) : compress(dest, 'text').then(() => res(dest), rej);
+            if (err)
+              rej(err);
+            else
+              compress(dest, 'text', options).then(() => res(dest), rej);
           });
         },
         rej

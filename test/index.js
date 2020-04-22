@@ -24,6 +24,24 @@ readdir(join(__dirname, 'source'), (_, files) => {
 
 
 
+// regular test for each kind of file + extras
+readdir(join(__dirname, 'source'), (_, files) => {
+  for (const file of files) {
+    ucompress(
+      join(__dirname, 'source', file),
+      join(__dirname, 'dest', file),
+      {createFiles: true}
+    )
+    .then(dest => ok(`\`${basename(dest)}\``))
+    .catch(err => {
+      error`\`\`\`${err}\`\`\``;
+      process.exit(1);
+    });
+  }
+});
+
+
+
 // wrong source files
 readdir(join(__dirname, 'source'), (_, files) => {
   for (const file of files) {

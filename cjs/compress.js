@@ -126,12 +126,15 @@ const headers = (source, extras = {}) => {
 };
 exports.headers = headers;
 
-const compress = (source, mode) => {
+const compress = (source, mode, options) => {
   writeFileSync(source + '.json', headers(source));
-  return Promise.all([
-    br(source, mode),
-    deflate(source),
-    gzip(source)
-  ]);
+  return options.createFiles ?
+    Promise.all([
+      br(source, mode),
+      deflate(source),
+      gzip(source)
+    ]) :
+    Promise.resolve()
+  ;
 };
 exports.compress = compress;
