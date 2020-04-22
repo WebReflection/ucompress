@@ -1,10 +1,13 @@
 'use strict';
 const {createHash} = require('crypto');
+const {extname} = require('path');
 const {
   createReadStream, createWriteStream, statSync, readFileSync, writeFileSync
 } = require('fs');
 const {pipeline} = require('stream');
 const zlib = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('zlib'));
+
+const mime = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('mime-types'));
 
 const {
   BROTLI_MAX_QUALITY,
@@ -44,7 +47,7 @@ const brotli = (source, mode) => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest));
+        writeFileSync(dest + '.json', headers(dest));
         res();
       }
     }
@@ -64,7 +67,7 @@ const deflate = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest));
+        writeFileSync(dest + '.json', headers(dest));
         res();
       }
     }
@@ -96,15 +99,27 @@ const gzip = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.etag', etag(dest));
+        writeFileSync(dest + '.json', headers(dest));
         res();
       }
     }
   );
 });
 
+const headers = source => {
+  const {mtimeMs, size} = statSync(source);
+  return JSON.stringify({
+    'content-type': mime.lookup(
+      extname(source.replace(/(?:\.(brotli|deflate|gzip))?$/, ''))
+    ),
+    'content-length': size,
+    etag: etag(source),
+    'last-modified': new Date(mtimeMs).toUTCString()
+  });
+};
+
 module.exports = (source, mode) => {
-  writeFileSync(source + '.etag', etag(source));
+  writeFileSync(source + '.json', headers(source));
   return Promise.all([
     brotli(source, mode),
     deflate(source),
