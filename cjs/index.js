@@ -224,4 +224,18 @@ ucompress.svg = (source, dest) => new Promise((res, rej) => {
   });
 });
 
+/**
+ * A list of all extensions that will be compressed via brotli and others.
+ * Every other file will simply be served as is (likely binary).
+ */
+ucompress.encoded = [
+  '.css',
+  '.html',
+  '.js',
+  '.md',
+  '.svg',
+  '.txt',
+  '.woff2'
+];
+
 module.exports = ucompress;

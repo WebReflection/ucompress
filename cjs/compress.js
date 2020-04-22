@@ -26,8 +26,8 @@ const {
   createGzip
 } = zlib;
 
-const brotli = (source, mode) => new Promise((res, rej) => {
-  const dest = source + '.brotli';
+const br = (source, mode) => new Promise((res, rej) => {
+  const dest = source + '.br';
   pipeline(
     createReadStream(source),
     createBrotliCompress({
@@ -47,7 +47,9 @@ const brotli = (source, mode) => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.json', headers(dest));
+        writeFileSync(dest + '.json', headers(dest, {
+          'Content-Encoding': 'br'
+        }));
         res();
       }
     }
@@ -67,7 +69,9 @@ const deflate = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.json', headers(dest));
+        writeFileSync(dest + '.json', headers(dest, {
+          'Content-Encoding': 'deflate'
+        }));
         res();
       }
     }
@@ -99,22 +103,25 @@ const gzip = source => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        writeFileSync(dest + '.json', headers(dest));
+        writeFileSync(dest + '.json', headers(dest, {
+          'Content-Encoding': 'gzip'
+        }));
         res();
       }
     }
   );
 });
 
-const headers = source => {
+const headers = (source, extras = {}) => {
   const {mtimeMs, size} = statSync(source);
   return JSON.stringify({
-    'content-type': mime.lookup(
-      extname(source.replace(/(?:\.(brotli|deflate|gzip))?$/, ''))
+    'Content-Type': mime.lookup(
+      extname(source.replace(/(?:\.(br|deflate|gzip))?$/, ''))
     ),
-    'content-length': size,
-    etag: etag(source),
-    'last-modified': new Date(mtimeMs).toUTCString()
+    'Content-Length': size,
+    ETag: etag(source),
+    'Last-Modified': new Date(mtimeMs).toUTCString(),
+    ...extras
   });
 };
 exports.headers = headers;
@@ -122,7 +129,7 @@ exports.headers = headers;
 const compress = (source, mode) => {
   writeFileSync(source + '.json', headers(source));
   return Promise.all([
-    brotli(source, mode),
+    br(source, mode),
     deflate(source),
     gzip(source)
   ]);

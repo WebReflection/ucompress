@@ -32,7 +32,7 @@ Each file will automatically generate its own related `.json` file which include
 
 ### Brotli, Deflate, and GZip
 
-The following kind of file extensions will automatically create their `.brotli`, `.deflate`, and `.gzip` version in the destination folder, plus their own `.json` file, per each different compression.
+The following file extensions, available via the `ucompress.encoded` array too, will automatically create their `.brotli`, `.deflate`, and `.gzip` version in the destination folder, plus their own `.json` file, per each different compression.
 
   * **.css**
   * **.html**
