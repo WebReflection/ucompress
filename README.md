@@ -95,6 +95,6 @@ app.listen(8080);
 
 #### Performance
 
-When used as CDN, the compression is done once per static asset, and never more than once. This reduces both RAM and CPU overhead in the long run, but it is slower than express static and compressed outcome the first time it's called.
+When used as CDN, the compression is done once per static asset, and never more than once. This reduces both RAM and CPU overhead in the long run, but it is slower than express static and compressed outcome the first time a file not compressed yet is reached.
 
-However, once the cache is ready, `ucompress.cdn` is 1.2 up to 2.5 times faster than express with static and compress.
+However, once the cache is ready, `ucompress.cdn` is _1.2x_ up to _2.5x_ faster than express with static and compress.

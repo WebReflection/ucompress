@@ -1,5 +1,7 @@
 'use strict';
-const {createReadStream, stat, mkdir, readFile} = require('fs');
+const {
+  createReadStream, stat, mkdir, readFile, unlink, existsSync, writeFileSync, watchFile, unwatchFile
+} = require('fs');
 const {tmpdir} = require('os');
 const {dirname, extname, join, resolve} = require('path');
 
@@ -12,6 +14,16 @@ const {parse} = JSON;
 const internalServerError = res => {
   res.writeHead(500);
   res.end();
+};
+
+/* istanbul ignore next */
+const readAndServe = (res, asset, IfNoneMatch/*, IfModifiedSince*/) => {
+  readFile(asset + '.json', (err, data) => {
+    if (err)
+      internalServerError(res);
+    else
+      serveFile(res, asset, parse(data), IfNoneMatch);
+  });
 };
 
 /* istanbul ignore next */
@@ -75,20 +87,36 @@ module.exports = ({source, dest, headers}) => {
         }
         readFile(asset + '.json', (err, data) => {
           if (err) {
-            mkdir(dirname(asset), {recursive: true}, err => {
+            const compress = resolve(DEST + path);
+            const waitForIt = compress + '.wait';
+            mkdir(dirname(compress), {recursive: true}, err => {
               if (err)
                 internalServerError(res);
+              // flag the creation of files so this can work with cluster too
+              else if (existsSync(waitForIt))
+                watchFile(waitForIt, () => {
+                  unwatchFile(waitForIt);
+                  readAndServe(res, asset, IfNoneMatch);
+                });
               else {
-                auto(original, resolve(DEST + path), options)
-                  .then(() => {
-                    readFile(asset + '.json', (err, data) => {
-                      if (err)
-                        internalServerError(res);
-                      else
-                        serveFile(res, asset, parse(data), IfNoneMatch);
-                    });
-                  })
-                  .catch(() => internalServerError(res));
+                try {
+                  writeFileSync(waitForIt, path);
+                  auto(original, compress, options)
+                    .then(
+                      () => {
+                        unlink(waitForIt, err => {
+                          if (err)
+                            internalServerError(res);
+                          else
+                            readAndServe(res, asset, IfNoneMatch);
+                        });
+                      },
+                      () => unlink(waitForIt, () => internalServerError(res))
+                    );
+                }
+                catch (o_O) {
+                  internalServerError(res);
+                }
               }
             });
           }
