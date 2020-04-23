@@ -1,7 +1,6 @@
 'use strict';
-const auto = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./auto.js'));
-const cdn = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./cdn.js'));
-const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
+const {extname} = require('path');
+
 const copy = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./copy.js'));
 const css = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./css.js'));
 const gif = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./gif.js'));
@@ -19,21 +18,37 @@ const xml = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istan
  * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-const ucompress = (...args) => auto(...args);
 
-ucompress.cdn = cdn;
-ucompress.compressed = new Set([...compressed]);
-
-ucompress.copy = copy;
-ucompress.css = css;
-ucompress.gif = gif;
-ucompress.htm = html;
-ucompress.html = html;
-ucompress.jpg = jpg;
-ucompress.jpeg = jpg;
-ucompress.js = js;
-ucompress.png = png;
-ucompress.svg = svg;
-ucompress.xml = xml;
-
-module.exports = ucompress;
+module.exports = (source, dest, options = {}) => {
+  let method = copy;
+  switch (extname(source).toLowerCase()) {
+    case '.css':
+      method = css;
+      break;
+    case '.gif':
+      method = gif;
+      break;
+    /* istanbul ignore next */
+    case '.htm':
+    case '.html':
+      method = html;
+      break;
+    case '.jpg':
+    case '.jpeg':
+      method = jpg;
+      break;
+    case '.js':
+      method = js;
+      break;
+    case '.png':
+      method = png;
+      break;
+    case '.svg':
+      method = svg;
+      break;
+    case '.xml':
+      method = xml;
+      break;
+  }
+  return method(source, dest, options);
+};
