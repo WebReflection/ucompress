@@ -1,14 +1,20 @@
 'use strict';
 const {createHash} = require('crypto');
-const {createReadStream, stat, writeFile} = require('fs');
+const {createReadStream, stat, unwatchFile, watchFile, writeFile} = require('fs');
 const {extname} = require('path');
 
 const mime = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('mime-types'));
 
-const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
-
 const {lookup} = mime;
 const {stringify} = JSON;
+
+const getLastModified = source => new Promise((res, rej) => {
+  stat(source, (err, stats) => {
+    /* istanbul ignore next */
+    if (err) rej(err);
+    else res(new Date(stats.mtimeMs).toUTCString());
+  });
+});
 
 const getHash = source => new Promise(res => {
   const hash = createHash('sha1');
@@ -23,12 +29,9 @@ const getHash = source => new Promise(res => {
 });
 
 module.exports = (source, dest, headers = {}) => new Promise((res, rej) => {
-  stat(source, (err, stats) => {
-    /* istanbul ignore next */
-    if (err) rej(err);
-    else {
-      const {mtimeMs} = stats;
-      const createHeaders = (err, stats) => {
+  getLastModified(source).then(
+    lastModified => {
+      stat(dest, (err, stats) => {
         /* istanbul ignore next */
         if (err) rej(err);
         else {
@@ -45,8 +48,8 @@ module.exports = (source, dest, headers = {}) => new Promise((res, rej) => {
                     '; charset=UTF-8' : ''
                 ),
                 'Content-Length': size,
+                'Last-Modified': lastModified,
                 ETag: `"${size.toString(16)}-${hash.substring(0, 16)}"`,
-                'Last-Modified': new Date(mtimeMs).toUTCString(),
                 ...headers
               }),
               err => {
@@ -57,11 +60,8 @@ module.exports = (source, dest, headers = {}) => new Promise((res, rej) => {
             );
           });
         }
-      };
-      if (source === dest)
-        createHeaders(err, stats);
-      else
-        stat(dest, createHeaders);
-    }
-  });
+      });
+    },
+    rej
+  );
 });
