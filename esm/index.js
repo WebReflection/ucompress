@@ -1,5 +1,5 @@
-import auto from './auto.js';
-import cdn from './cdn.js';
+import {extname} from 'path';
+
 import compressed from './compressed.js';
 import copy from './copy.js';
 import css from './css.js';
@@ -18,16 +18,47 @@ import xml from './xml.js';
  * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-const ucompress = (...args) => auto(...args);
+const ucompress = (source, dest, options = {}) => {
+  let method = copy;
+  switch (extname(source).toLowerCase()) {
+    case '.css':
+      method = css;
+      break;
+    case '.gif':
+      method = gif;
+      break;
+    case '.html':
+    /* istanbul ignore next */
+    case '.htm':
+      method = html;
+      break;
+    case '.jpg':
+    case '.jpeg':
+      method = jpg;
+      break;
+    case '.js':
+      method = js;
+      break;
+    case '.png':
+      method = png;
+      break;
+    case '.svg':
+      method = svg;
+      break;
+    case '.xml':
+      method = xml;
+      break;
+  }
+  return method(source, dest, options);
+};
 
-ucompress.cdn = cdn;
 ucompress.compressed = new Set([...compressed]);
 
 ucompress.copy = copy;
 ucompress.css = css;
 ucompress.gif = gif;
-ucompress.htm = html;
 ucompress.html = html;
+ucompress.htm = html;
 ucompress.jpg = jpg;
 ucompress.jpeg = jpg;
 ucompress.js = js;
