@@ -18,7 +18,8 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
       if (err)
         rej(err);
       else if (options.createFiles)
-        headers(source, dest, options.headers).then(() => res(dest), rej);
+        headers(source, dest, options.headers)
+          .then(() => res(dest), rej);
       else
         res(dest);
     });

@@ -27,7 +27,8 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
               if (err)
                 rej(err);
               else if (options.createFiles)
-                compress(dest, 'text', options).then(() => res(dest), rej);
+                compress(source, dest, 'text', options)
+                  .then(() => res(dest), rej);
               else
                 res(dest);
             });

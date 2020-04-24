@@ -28,10 +28,11 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
       else if (options.createFiles) {
         const ext = extname(source);
         if (compressed.has(ext))
-          compress(dest, ext === '.woff2' ? 'font' : 'text', options)
+          compress(source, dest, ext === '.woff2' ? 'font' : 'text', options)
             .then(() => res(dest), rej);
         else
-          headers(source, dest, options.headers).then(() => res(dest), rej);
+          headers(source, dest, options.headers)
+            .then(() => res(dest), rej);
       }
       else
         res(dest);

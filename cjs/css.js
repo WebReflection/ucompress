@@ -25,7 +25,8 @@ module.exports = (source, dest, options = {}) => new Promise((res, rej) => {
         if (err)
           rej(err);
         else if (options.createFiles)
-          compress(dest, 'text', options).then(() => res(dest), rej);
+          compress(source, dest, 'text', options)
+            .then(() => res(dest), rej);
         else
           res(dest);
       });

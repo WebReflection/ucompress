@@ -25,13 +25,13 @@ const zlibDefaultOptions = {
   level: Z_BEST_COMPRESSION
 };
 
-const br = (source, options, mode) => new Promise((res, rej) => {
-  const dest = source + '.br';
-  stat(source, (err, stats) => {
+const br = (source, target, options, mode) => new Promise((res, rej) => {
+  const dest = target + '.br';
+  stat(target, (err, stats) => {
     /* istanbul ignore next */
     if (err) rej(err);
     else pipeline(
-      createReadStream(source),
+      createReadStream(target),
       createBrotliCompress({
         [BROTLI_PARAM_SIZE_HINT]: stats.size,
         [BROTLI_PARAM_QUALITY]: BROTLI_MAX_QUALITY,
@@ -59,10 +59,10 @@ const br = (source, options, mode) => new Promise((res, rej) => {
   });
 });
 
-const deflate = (source, options) => new Promise((res, rej) => {
-  const dest = source + '.deflate';
+const deflate = (source, target, options) => new Promise((res, rej) => {
+  const dest = target + '.deflate';
   pipeline(
-    createReadStream(source),
+    createReadStream(target),
     createDeflate(zlibDefaultOptions),
     createWriteStream(dest),
     err => {
@@ -79,10 +79,10 @@ const deflate = (source, options) => new Promise((res, rej) => {
   );
 });
 
-const gzip = (source, options) => new Promise((res, rej) => {
-  const dest = source + '.gzip';
+const gzip = (source, target, options) => new Promise((res, rej) => {
+  const dest = target + '.gzip';
   pipeline(
-    createReadStream(source),
+    createReadStream(target),
     createGzip(zlibDefaultOptions),
     createWriteStream(dest),
     err => {
@@ -99,9 +99,9 @@ const gzip = (source, options) => new Promise((res, rej) => {
   );
 });
 
-export default (source, mode, options) => Promise.all([
-    headers(source, source, options.headers),
-    br(source, options, mode),
-    deflate(source, options),
-    gzip(source, options)
+export default (source, dest, mode, options) => Promise.all([
+    headers(source, dest, options.headers),
+    br(source, dest, options, mode),
+    deflate(source, dest, options),
+    gzip(source, dest, options)
 ]);
