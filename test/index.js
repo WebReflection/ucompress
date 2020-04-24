@@ -132,3 +132,5 @@ ucompress.png(
   process.exit(1);
 })
 .catch(() => ok`bad PNG fails as expected`);
+
+//*/

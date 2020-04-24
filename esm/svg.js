@@ -25,8 +25,10 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
             writeFile(dest, data, err => {
               if (err)
                 rej(err);
-              else
+              else if (options.createFiles)
                 compress(dest, 'text', options).then(() => res(dest), rej);
+              else
+                res(dest);
             });
           },
           rej

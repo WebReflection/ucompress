@@ -99,10 +99,9 @@ const gzip = (source, options) => new Promise((res, rej) => {
   );
 });
 
-export default (source, mode, options) => Promise.all(
-  [headers(source, options.headers)].concat(options.createFiles ? [
+export default (source, mode, options) => Promise.all([
+    headers(source, options.headers),
     br(source, options, mode),
     deflate(source, options),
     gzip(source, options)
-  ] : []
-));
+]);

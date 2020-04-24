@@ -29,11 +29,11 @@ ucompress.copy(source, dest).then(dest => console.log(dest));
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
   * **xml** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
 
-Each file will automatically generate its own related `.json` file which includes a [RFC-7232](https://tools.ietf.org/html/rfc7232#section-2.3.3) compliant _ETag_, among other details such as `last-modified`, `content-type`, and `content-length`.
+### Brotli, Deflate, GZip, and Headers
 
-### Brotli, Deflate, and GZip
+If the third, optional object, contains a `{createFile: true}` flag, each file will automatically generate its own related `.json` file which includes a [RFC-7232](https://tools.ietf.org/html/rfc7232#section-2.3.3) compliant _ETag_, among other details such as `last-modified`, `content-type`, and `content-length`.
 
-The following file extensions, available via the `ucompress.encoded` _set_ too, will create their `.br`, `.deflate`, and `.gzip` version in the destination folder, plus their own `.json` file, per each different compression, **only** if the method received an option with `{createFile: true}`.
+The following file extensions, available via the `ucompress.encoded` _Set_, will also create their `.br`, `.deflate`, and `.gzip` version in the destination folder, plus their own `.json` file, per each different compression, but **only** when `{createFile: true}` is passed.
 
   * **.css**
   * **.html**
@@ -46,7 +46,7 @@ The following file extensions, available via the `ucompress.encoded` _set_ too, 
   * **.xml**
   * **.yml**
 
-Incompatible files will fallback as regular copy `source` into `dest` when the module is used as callback, without creating any optimized version.
+Incompatible files will fallback as regular copy `source` into `dest` when the module is used as callback, without creating any optimized version, still providing headers when the flag is used.
 
 ### As Micro CDN
 

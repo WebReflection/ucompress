@@ -24,7 +24,7 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
     copyFile(source, dest, err => {
       if (err)
         rej(err);
-      else {
+      else if (options.createFiles) {
         const ext = extname(source);
         if (compressed.has(ext))
           compress(dest, ext === '.woff2' ? 'font' : 'text', options)
@@ -32,5 +32,7 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
         else
           headers(dest, options.headers).then(() => res(dest), rej);
       }
+      else
+        res(dest);
     });
   });

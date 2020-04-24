@@ -17,7 +17,9 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
     execFile(gifsicle, ['-o', dest, source], err => {
       if (err)
         rej(err);
-      else
+      else if (options.createFiles)
         headers(dest, options.headers).then(() => res(dest), rej);
+      else
+        res(dest);
     });
   });

@@ -23,8 +23,10 @@ export default (source, dest, options = {}) => new Promise((res, rej) => {
       writeFile(dest, csso.minify(data).css, err => {
         if (err)
           rej(err);
-        else
+        else if (options.createFiles)
           compress(dest, 'text', options).then(() => res(dest), rej);
+        else
+          res(dest);
       });
     }
   });

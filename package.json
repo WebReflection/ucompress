@@ -7,7 +7,7 @@
     "build": "npm run cjs && npm run test",
     "cjs": "ascjs --no-default esm cjs",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "test": "mkdir -p test/dest && nyc node test/index.js"
+    "test": "rm -rf test/dest && mkdir -p test/dest && nyc node test/index.js"
   },
   "keywords": [
     "minify",

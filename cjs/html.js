@@ -33,8 +33,10 @@ module.exports = (source, dest, /* istanbul ignore next */options = {}) =>
           writeFile(dest, html.minify(file.toString(), htmlArgs), err => {
             if (err)
               rej(err);
-            else
+            else if (options.createFiles)
               compress(dest, 'text', options).then(() => res(dest), rej);
+            else
+              res(dest);
           });
         }
         catch (error) {

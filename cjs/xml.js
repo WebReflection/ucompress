@@ -33,8 +33,10 @@ module.exports = (source, dest, /* istanbul ignore next */options = {}) =>
             /* istanbul ignore next */
             if (err)
               rej(err);
-            else
+            else if (options.createFiles)
               compress(dest, 'text', options).then(() => res(dest), rej);
+            else
+              res(dest);
           });
         }
         catch (error) {

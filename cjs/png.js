@@ -22,11 +22,15 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
         copyFile(source, dest, err => {
           if (err)
             rej(err);
-          else
+          else if (options.createFiles)
             headers(dest, options.headers).then(() => res(dest), rej);
+          else
+            res(dest);
         });
       }
-      else
+      else if (options.createFiles)
         headers(dest, options.headers).then(() => res(dest), rej);
+      else
+        res(dest);
     });
   });
