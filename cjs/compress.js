@@ -26,13 +26,13 @@ const zlibDefaultOptions = {
   level: Z_BEST_COMPRESSION
 };
 
-const br = (source, target, options, mode) => new Promise((res, rej) => {
-  const dest = target + '.br';
-  stat(target, (err, stats) => {
+const br = (source, mode) => new Promise((res, rej) => {
+  const dest = source + '.br';
+  stat(source, (err, stats) => {
     /* istanbul ignore next */
     if (err) rej(err);
     else pipeline(
-      createReadStream(target),
+      createReadStream(source),
       createBrotliCompress({
         [BROTLI_PARAM_SIZE_HINT]: stats.size,
         [BROTLI_PARAM_QUALITY]: BROTLI_MAX_QUALITY,
@@ -47,62 +47,57 @@ const br = (source, target, options, mode) => new Promise((res, rej) => {
       createWriteStream(dest),
       err => {
         /* istanbul ignore next */
-        if (err)
-          rej(err);
-        else {
-          headers(source, dest, {
-            ...options.headers,
-            'Content-Encoding': 'br'
-          }).then(res, rej);
-        }
+        if (err) rej(err);
+        else res(dest);
       }
     );
   });
 });
 
-const deflate = (source, target, options) => new Promise((res, rej) => {
-  const dest = target + '.deflate';
+const deflate = source => new Promise((res, rej) => {
+  const dest = source + '.deflate';
   pipeline(
-    createReadStream(target),
+    createReadStream(source),
     createDeflate(zlibDefaultOptions),
     createWriteStream(dest),
     err => {
       /* istanbul ignore next */
-      if (err)
-        rej(err);
-      else {
-        headers(source, dest, {
-          ...options.headers,
-          'Content-Encoding': 'deflate'
-        }).then(res, rej);
-      }
+      if (err) rej(err);
+      else res(dest);
     }
   );
 });
 
-const gzip = (source, target, options) => new Promise((res, rej) => {
-  const dest = target + '.gzip';
+const gzip = source => new Promise((res, rej) => {
+  const dest = source + '.gzip';
   pipeline(
-    createReadStream(target),
+    createReadStream(source),
     createGzip(zlibDefaultOptions),
     createWriteStream(dest),
     err => {
       /* istanbul ignore next */
-      if (err)
-        rej(err);
-      else {
-        headers(source, dest, {
-          ...options.headers,
-          'Content-Encoding': 'gzip'
-        }).then(res, rej);
-      }
+      if (err) rej(err);
+      else res(dest);
     }
   );
 });
 
 module.exports = (source, dest, mode, options) => Promise.all([
-    headers(source, dest, options.headers),
-    br(source, dest, options, mode),
-    deflate(source, dest, options),
-    gzip(source, dest, options)
-]);
+    br(dest, mode),
+    gzip(dest),
+    deflate(dest)
+]).then(([br, gzip, deflate]) => Promise.all([
+  headers(source, dest, options.headers),
+  headers(source, br, {
+    ...options.headers,
+    'Content-Encoding': 'br'
+  }),
+  headers(source, gzip, {
+    ...options.headers,
+    'Content-Encoding': 'gzip'
+  }),
+  headers(source, deflate, {
+    ...options.headers,
+    'Content-Encoding': 'deflate'
+  })
+]));

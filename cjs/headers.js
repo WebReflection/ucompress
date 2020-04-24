@@ -4,17 +4,24 @@ const {createReadStream, stat, unwatchFile, watchFile, writeFile} = require('fs'
 const {extname} = require('path');
 
 const mime = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('mime-types'));
+const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
 
 const {lookup} = mime;
 const {stringify} = JSON;
 
-const getLastModified = source => new Promise((res, rej) => {
-  stat(source, (err, stats) => {
-    /* istanbul ignore next */
-    if (err) rej(err);
-    else res(new Date(stats.mtimeMs).toUTCString());
-  });
-});
+const cache = new Map;
+const wrap = umap(cache);
+
+const getLastModified = source => (
+  wrap.get(source) ||
+  wrap.set(source, new Promise((res, rej) => {
+    stat(source, (err, stats) => {
+      /* istanbul ignore next */
+      if (err) rej(err);
+      else res(new Date(stats.mtimeMs).toUTCString());
+    });
+  }))
+);
 
 const getHash = source => new Promise(res => {
   const hash = createHash('sha1');
@@ -53,6 +60,7 @@ module.exports = (source, dest, headers = {}) => new Promise((res, rej) => {
                 ...headers
               }),
               err => {
+                cache.delete(source);
                 /* istanbul ignore next */
                 if (err) rej(err);
                 else res(dest);
