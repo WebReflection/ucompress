@@ -31,7 +31,7 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
           compress(dest, ext === '.woff2' ? 'font' : 'text', options)
             .then(() => res(dest), rej);
         else
-          headers(dest, options.headers).then(() => res(dest), rej);
+          headers(source, dest, options.headers).then(() => res(dest), rej);
       }
       else
         res(dest);

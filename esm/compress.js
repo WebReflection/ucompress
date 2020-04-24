@@ -49,7 +49,7 @@ const br = (source, options, mode) => new Promise((res, rej) => {
         if (err)
           rej(err);
         else {
-          headers(dest, {
+          headers(source, dest, {
             ...options.headers,
             'Content-Encoding': 'br'
           }).then(res, rej);
@@ -70,7 +70,7 @@ const deflate = (source, options) => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        headers(dest, {
+        headers(source, dest, {
           ...options.headers,
           'Content-Encoding': 'deflate'
         }).then(res, rej);
@@ -90,7 +90,7 @@ const gzip = (source, options) => new Promise((res, rej) => {
       if (err)
         rej(err);
       else {
-        headers(dest, {
+        headers(source, dest, {
           ...options.headers,
           'Content-Encoding': 'gzip'
         }).then(res, rej);
@@ -100,7 +100,7 @@ const gzip = (source, options) => new Promise((res, rej) => {
 });
 
 export default (source, mode, options) => Promise.all([
-    headers(source, options.headers),
+    headers(source, source, options.headers),
     br(source, options, mode),
     deflate(source, options),
     gzip(source, options)
