@@ -18,6 +18,7 @@ ucompress.html(source, dest).then(dest => console.log(dest));
 ucompress.copy(source, dest).then(dest => console.log(dest));
 ```
 
+
 ### Compressions
 
   * **css** files via [csso](https://www.npmjs.com/package/csso)
@@ -28,6 +29,16 @@ ucompress.copy(source, dest).then(dest => console.log(dest));
   * **png** files via [pngquant-bin](https://www.npmjs.com/package/pngquant-bin)
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
   * **xml** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
+
+
+### Options
+
+The optional third `options` _object_ parameter can contain any of the following properties:
+
+  * `createFile`, a _boolean_ property, `false` by default, that will automatically pre-compress via _brotli_, _gzip_, and _deflate_, compatible files, plus it will create a `.json` file with pre-processed _headers_ details per each file
+  * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
+  * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
+
 
 ### Brotli, Deflate, GZip, and Headers
 
@@ -47,6 +58,7 @@ The following file extensions, available via the `ucompress.encoded` _Set_, will
   * **.yml**
 
 Incompatible files will fallback as regular copy `source` into `dest` when the module is used as callback, without creating any optimized version, still providing headers when the flag is used.
+
 
 ### As Micro CDN
 

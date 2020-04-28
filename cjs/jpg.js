@@ -1,11 +1,27 @@
 'use strict';
 const {execFile} = require('child_process');
+const {unlink} = require('fs');
 
 const jpegtran = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('jpegtran-bin'));
+const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
 
 const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
 
+const fit = sharp.fit.inside;
 const jpegtranArgs = ['-progressive', '-optimize', '-outfile'];
+const withoutEnlargement = true;
+
+const optimize = (source, dest, options) => new Promise((res, rej) => {
+  execFile(jpegtran, jpegtranArgs.concat(dest, source), err => {
+    if (err)
+      rej(err);
+    else if (options.createFiles)
+      headers(source, dest, options.headers)
+        .then(() => res(dest), rej);
+    else
+      res(dest);
+  });
+});
 
 /**
  * Create a file after optimizing via `jpegtran`.
@@ -16,13 +32,26 @@ const jpegtranArgs = ['-progressive', '-optimize', '-outfile'];
  */
 module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    execFile(jpegtran, jpegtranArgs.concat(dest, source), err => {
-      if (err)
-        rej(err);
-      else if (options.createFiles)
-        headers(source, dest, options.headers)
-          .then(() => res(dest), rej);
-      else
-        res(dest);
-    });
+    const {maxWidth: width, maxHeight: height} = options;
+    if (width || height) {
+      sharp(source)
+        .resize({width, height, fit, withoutEnlargement})
+        .toFile(`${dest}.resized.jpg`)
+        .then(
+          () => optimize(`${dest}.resized.jpg`, dest, options).then(
+            () => {
+              unlink(`${dest}.resized.jpg`, err => {
+                /* istanbul ignore if */
+                if (err) rej(err);
+                else res(dest);
+              });
+            },
+            rej
+          ),
+          rej
+        )
+      ;
+    }
+    else
+      optimize(source, dest, options).then(res, rej);
   });
