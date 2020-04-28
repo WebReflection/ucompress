@@ -49,7 +49,8 @@ setTimeout(
               join(__dirname, 'dest', file),
               {
                 createFiles: true,
-                maxWidth: 320
+                maxWidth: 320,
+                maxHeight: 320
               }
             )
             .then(dest => ok(`\`${basename(dest)}\``))
