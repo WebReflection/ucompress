@@ -10,22 +10,14 @@ const fit = sharp.fit.inside;
 const pngquantArgs = ['--skip-if-larger', '--speed', '1', '-f', '-o'];
 const withoutEnlargement = true;
 
-const optimize = (source, dest, options) => new Promise((res, rej) => {
+const optimize = (source, dest) => new Promise((res, rej) => {
   execFile(pngquant, pngquantArgs.concat(dest, source), err => {
     if (err) {
       copyFile(source, dest, err => {
-        if (err)
-          rej(err);
-        else if (options.createFiles)
-          headers(source, dest, options.headers)
-            .then(() => res(dest), rej);
-        else
-          res(dest);
+        if (err) rej(err);
+        else res(dest);
       });
     }
-    else if (options.createFiles)
-      headers(source, dest, options.headers)
-        .then(() => res(dest), rej);
     else
       res(dest);
   });
@@ -40,18 +32,24 @@ const optimize = (source, dest, options) => new Promise((res, rej) => {
  */
 export default (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    const {maxWidth: width, maxHeight: height} = options;
+    const {maxWidth: width, maxHeight: height, createFiles} = options;
+    const done = () => res(dest);
+    const walkThrough = () => {
+      if (createFiles) writeHeaders(dest).then(done, rej);
+      else done();
+    };
+    const writeHeaders = dest => headers(source, dest, options.headers);
     if (width || height) {
       sharp(source)
         .resize({width, height, fit, withoutEnlargement})
         .toFile(`${dest}.resized.png`)
         .then(
-          () => optimize(`${dest}.resized.png`, dest, options).then(
+          () => optimize(`${dest}.resized.png`, dest).then(
             () => {
               unlink(`${dest}.resized.png`, err => {
                 /* istanbul ignore if */
                 if (err) rej(err);
-                else res(dest);
+                else walkThrough();
               });
             },
             rej
@@ -61,5 +59,5 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       ;
     }
     else
-      optimize(source, dest, options).then(res, rej);
+      optimize(source, dest).then(walkThrough, rej);
   });
