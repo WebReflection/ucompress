@@ -3,6 +3,8 @@ const {basename, join} = require('path');
 const {log, ok, error} = require('essential-md');
 const ucompress = require('../cjs');
 
+const TIMEOUT = 1000;
+
 log`# ucompress test`;
 
 
@@ -50,7 +52,8 @@ setTimeout(
               {
                 createFiles: true,
                 maxWidth: 320,
-                maxHeight: 320
+                maxHeight: 320,
+                preview: true
               }
             )
             .then(dest => ok(`\`${basename(dest)}\``))
@@ -76,15 +79,18 @@ setTimeout(
                 .catch(() => ok`\`no-${file}\` failed`);
               }
             });
-            setTimeout(lastChecks, 1000);
+            setTimeout(
+              lastChecks,
+              TIMEOUT
+            );
           },
-          1000
+          TIMEOUT
         );
       },
-      1000
+      TIMEOUT
     );
   },
-  1000
+  TIMEOUT
 );
 
 function lastChecks() {

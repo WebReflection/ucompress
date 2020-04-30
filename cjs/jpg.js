@@ -6,6 +6,7 @@ const jpegtran = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
 
 const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
+const previewIfy = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./preview.js'));
 
 const fit = sharp.fit.inside;
 const jpegtranArgs = ['-progressive', '-optimize', '-outfile'];
@@ -32,7 +33,8 @@ const optimize = (source, dest, options) => new Promise((res, rej) => {
  */
 module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    const {maxWidth: width, maxHeight: height} = options;
+    const {maxWidth: width, maxHeight: height, preview} = options;
+    const done = () => res(dest);
     if (width || height) {
       sharp(source)
         .resize({width, height, fit, withoutEnlargement})
@@ -41,9 +43,13 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
           () => optimize(`${dest}.resized.jpg`, dest, options).then(
             () => {
               unlink(`${dest}.resized.jpg`, err => {
-                /* istanbul ignore if */
-                if (err) rej(err);
-                else res(dest);
+                /* istanbul ignore next */
+                if (err)
+                  rej(err);
+                else if (preview)
+                  previewIfy(dest).then(done, rej);
+                else
+                  done();
               });
             },
             rej
@@ -53,5 +59,9 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
       ;
     }
     else
-      optimize(source, dest, options).then(res, rej);
+      optimize(source, dest, options).then(
+        /* istanbul ignore next */
+        preview ? () => previewIfy(dest).then(done, rej) : done,
+        rej
+      );
   });

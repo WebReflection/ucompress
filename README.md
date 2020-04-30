@@ -38,6 +38,7 @@ The optional third `options` _object_ parameter can contain any of the following
   * `createFile`, a _boolean_ property, `false` by default, that will automatically pre-compress via _brotli_, _gzip_, and _deflate_, compatible files, plus it will create a `.json` file with pre-processed _headers_ details per each file
   * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
   * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
+  * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures
 
 
 ### Brotli, Deflate, GZip, and Headers

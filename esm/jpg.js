@@ -5,6 +5,7 @@ import jpegtran from 'jpegtran-bin';
 import sharp from 'sharp';
 
 import headers from './headers.js';
+import previewIfy from './preview.js';
 
 const fit = sharp.fit.inside;
 const jpegtranArgs = ['-progressive', '-optimize', '-outfile'];
@@ -31,7 +32,8 @@ const optimize = (source, dest, options) => new Promise((res, rej) => {
  */
 export default (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    const {maxWidth: width, maxHeight: height} = options;
+    const {maxWidth: width, maxHeight: height, preview} = options;
+    const done = () => res(dest);
     if (width || height) {
       sharp(source)
         .resize({width, height, fit, withoutEnlargement})
@@ -40,9 +42,13 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
           () => optimize(`${dest}.resized.jpg`, dest, options).then(
             () => {
               unlink(`${dest}.resized.jpg`, err => {
-                /* istanbul ignore if */
-                if (err) rej(err);
-                else res(dest);
+                /* istanbul ignore next */
+                if (err)
+                  rej(err);
+                else if (preview)
+                  previewIfy(dest).then(done, rej);
+                else
+                  done();
               });
             },
             rej
@@ -52,5 +58,9 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       ;
     }
     else
-      optimize(source, dest, options).then(res, rej);
+      optimize(source, dest, options).then(
+        /* istanbul ignore next */
+        preview ? () => previewIfy(dest).then(done, rej) : done,
+        rej
+      );
   });
