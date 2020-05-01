@@ -2,6 +2,11 @@
 
 [![Build Status](https://travis-ci.com/WebReflection/ucompress.svg?branch=master)](https://travis-ci.com/WebReflection/ucompress) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/ucompress/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/ucompress?branch=master)
 
+
+![compressed umbrellas](./test/ucompress.jpg)
+
+<sup>**Social Media Photo by [Kevin Borrill](https://unsplash.com/@kev2480) on [Unsplash](https://unsplash.com/)**</sup>
+
 A <em>micro</em>, all-in-one, compressor for common Web files.
 
 ```js
