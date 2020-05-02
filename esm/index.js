@@ -1,4 +1,6 @@
-import {extname} from 'path';
+import {stat, readdir} from 'fs';
+
+import {extname, join} from 'path';
 
 import compressed from './compressed.js';
 import copy from './copy.js';
@@ -10,6 +12,30 @@ import js from './js.js';
 import png from './png.js';
 import svg from './svg.js';
 import xml from './xml.js';
+
+const crawl = (source, options) => new Promise((res, rej) => {
+  stat(source, (err, stat) => {
+    /* istanbul ignore if */
+    if (err)
+      rej(err);
+    else {
+      if (stat.isFile())
+        copy(source, source, options).then(res, rej);
+      /* istanbul ignore else */
+      else if (stat.isDirectory())
+        readdir(source, (err, files) => {
+          /* istanbul ignore if */
+          if (err)
+            rej(err);
+          else
+            Promise.all(files
+              .filter(file => !/^[._]/.test(file))
+              .map(file => crawl(join(source, file), options))
+            ).then(res, rej);
+        });
+    }
+  });
+});
 
 /**
  * Create a file after minifying or optimizing it, when possible.
@@ -53,6 +79,9 @@ const ucompress = (source, dest, options = {}) => {
 };
 
 ucompress.compressed = new Set([...compressed]);
+
+ucompress.createHeaders = (source, headers = {}) =>
+                            crawl(source, {createFiles: true, headers});
 
 ucompress.copy = copy;
 ucompress.css = css;

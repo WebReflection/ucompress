@@ -1,6 +1,6 @@
 'use strict';
 const {createHash} = require('crypto');
-const {createReadStream, stat, unwatchFile, watchFile, writeFile} = require('fs');
+const {createReadStream, stat, writeFile} = require('fs');
 const {extname} = require('path');
 
 const mime = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('mime-types'));

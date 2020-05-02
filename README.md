@@ -2,6 +2,11 @@
 
 [![Build Status](https://travis-ci.com/WebReflection/ucompress.svg?branch=master)](https://travis-ci.com/WebReflection/ucompress) [![Coverage Status](https://coveralls.io/repos/github/WebReflection/ucompress/badge.svg?branch=master)](https://coveralls.io/github/WebReflection/ucompress?branch=master)
 
+
+![compressed umbrellas](./test/ucompress.jpg)
+
+<sup>**Social Media Photo by [Kevin Borrill](https://unsplash.com/@kev2480) on [Unsplash](https://unsplash.com/)**</sup>
+
 A <em>micro</em>, all-in-one, compressor for common Web files.
 
 ```js
@@ -39,6 +44,20 @@ The optional third `options` _object_ parameter can contain any of the following
   * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
   * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
   * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures
+
+
+#### About `ucompress.createHeaders(path[, headers])`
+
+This method creates headers for a specific file, or all files within a folder, excluding files that starts with a `.` dot or an `_` underscore.
+
+```js
+ucompress.createHeaders(
+  // a folder with already optimized files
+  '/path/static',
+  // optional headers to set per folder
+  {'Access-Control-Allow-Origin': '*'}
+);
+```
 
 
 ### Brotli, Deflate, GZip, and Headers

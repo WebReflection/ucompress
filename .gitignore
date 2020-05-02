@@ -1,4 +1,6 @@
 .nyc_output/
 node_modules/
 test/dest/
+test/prepared/text.txt.*
+test/prepared/recursive/text.txt.*
 package-lock.json

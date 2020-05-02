@@ -22,7 +22,7 @@ compressed.add('.yml');
  */
 module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    copyFile(source, dest, err => {
+    const onCopy = err => {
       if (err)
         rej(err);
       else if (options.createFiles) {
@@ -36,5 +36,9 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
       }
       else
         res(dest);
-    });
+    };
+    if (source === dest)
+      onCopy(null);
+    else
+      copyFile(source, dest, onCopy);
   });

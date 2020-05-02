@@ -1,5 +1,5 @@
 import {createHash} from 'crypto';
-import {createReadStream, stat, unwatchFile, watchFile, writeFile} from 'fs';
+import {createReadStream, stat, writeFile} from 'fs';
 import {extname} from 'path';
 
 import mime from 'mime-types';

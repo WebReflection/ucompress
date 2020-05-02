@@ -80,7 +80,19 @@ setTimeout(
               }
             });
             setTimeout(
-              lastChecks,
+              () => {
+                ucompress.createHeaders(join(__dirname, 'prepared')).then(
+                  () => ok`createHeaders works`,
+                  () => {
+                    error`createHeaders failure`;
+                    process.exit(1);
+                  }
+                );
+                setTimeout(
+                  lastChecks,
+                  TIMEOUT
+                );
+              },
               TIMEOUT
             );
           },
