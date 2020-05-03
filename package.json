@@ -3,6 +3,7 @@
   "version": "0.11.2",
   "description": "A micro, all-in-one, compressor for common Web files",
   "main": "./cjs/index.js",
+  "bin": "./binary.cjs",
   "scripts": {
     "build": "npm run cjs && npm run test",
     "cjs": "ascjs --no-default esm cjs",
@@ -24,7 +25,7 @@
   "devDependencies": {
     "ascjs": "^4.0.0",
     "compression": "^1.7.4",
-    "coveralls": "^3.0.14",
+    "coveralls": "^3.1.0",
     "essential-md": "^0.3.0",
     "express": "^4.17.1",
     "nyc": "^15.0.1"

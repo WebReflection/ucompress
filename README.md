@@ -83,3 +83,10 @@ Incompatible files will fallback as regular copy `source` into `dest` when the m
 ### As Micro CDN
 
 If you'd like to use this module to serve files _CDN_ like, check **[µcdn](https://github.com/WebReflection/ucdn#readme)** out!
+
+
+### As binary file
+
+Due dependencies, it's recommended to install this module via `npm i -g ucompress`, however you can try it via `npx` too.
+
+Run `npx ucompress --help` to see options.
