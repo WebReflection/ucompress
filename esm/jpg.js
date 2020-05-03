@@ -8,11 +8,11 @@ import headers from './headers.js';
 import blur from './preview.js';
 
 const fit = sharp.fit.inside;
-const jpegtranArgs = ['-progressive', '-optimize', '-outfile'];
+const jpegtranArgs = ['-optimize', '-outfile'];
 const withoutEnlargement = true;
 
-const optimize = (source, dest) => new Promise((res, rej) => {
-  execFile(jpegtran, jpegtranArgs.concat(dest, source), err => {
+const optimize = (args, source, dest) => new Promise((res, rej) => {
+  execFile(jpegtran, args.concat(dest, source), err => {
     if (err) rej(err);
     else res(dest);
   });
@@ -45,12 +45,14 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       else done();
     };
     const writeHeaders = dest => headers(source, dest, options.headers);
+    const args = preview ? [] : ['-progressive'];
+    args.push('-optimize', '-outfile');
     if (width || height) {
       sharp(source)
         .resize({width, height, fit, withoutEnlargement})
         .toFile(`${dest}.resized.jpg`)
         .then(
-          () => optimize(`${dest}.resized.jpg`, dest).then(
+          () => optimize(args, `${dest}.resized.jpg`, dest).then(
             () => {
               unlink(`${dest}.resized.jpg`, err => {
                 /* istanbul ignore if */
@@ -65,5 +67,5 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       ;
     }
     else
-      optimize(source, dest).then(walkThrough, rej);
+      optimize(args, source, dest).then(walkThrough, rej);
   });
