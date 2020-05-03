@@ -57,8 +57,8 @@ if (headers && !dest)
 if (help || !dest) {
   console.log('');
   console.log(`\x1b[1mucompress --source ./path/ --dest ./other-path/\x1b[0m`);
-  console.log(`  --dest ./          \x1b[2m# destination path where files are created\x1b[0m`);
-  console.log(`  --source ./        \x1b[2m# path to compress, default current folder\x1b[0m`);
+  console.log(`  --dest ./          \x1b[2m# destination folder where files are created\x1b[0m`);
+  console.log(`  --source ./        \x1b[2m# file or folder to compress, default current folder\x1b[0m`);
   console.log(`  --max-width X      \x1b[2m# max images width in pixels\x1b[0m`);
   console.log(`  --max-height X     \x1b[2m# max images height in pixels\x1b[0m`);
   console.log(`  --create-headers   \x1b[2m# creates .json files to serve as headers\x1b[0m`);
