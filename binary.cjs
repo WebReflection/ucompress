@@ -67,6 +67,9 @@ if (help || !dest) {
   console.log(`  --with-preview     \x1b[2m# enables *.preview.jpeg images\x1b[0m`);
   console.log(`  --preview          \x1b[2m# alias for --with-preview\x1b[0m`);
   console.log('');
+  console.log('\x1b[1m\x1b[2mPlease note:\x1b[0m\x1b[2m if source and dest are the same, both \x1b[0m--create-headers');
+  console.log('\x1b[2mand \x1b[0m--with-preview\x1b[2m, or \x1b[0m--preview\x1b[2m, will \x1b[1mnot\x1b[0m\x1b[2m compress any file.\x1b[0m');
+  console.log('');
 }
 else {
   const error = err => {
