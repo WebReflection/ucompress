@@ -73,10 +73,36 @@ else {
     console.error(err);
     process.exit(1);
   };
-  if (headers && dest === source)
+  const samePath = dest === source;
+  if (headers && samePath)
     ucompress.createHeaders(dest).catch(error);
-  else if (preview && dest === source)
-    blur(dest).catch(error);
+  else if (preview && samePath) {
+    // blur(dest).catch(error);
+    const crawl = source => new Promise((res, rej) => {
+      stat(source, (err, stat) => {
+        /* istanbul ignore if */
+        if (err)
+          rej(err);
+        else {
+          if (stat.isFile())
+            blur(source).then(res, rej);
+          /* istanbul ignore else */
+          else if (stat.isDirectory())
+            readdir(source, (err, files) => {
+              /* istanbul ignore if */
+              if (err)
+                rej(err);
+              else
+                Promise.all(files
+                  .filter(file => !/^[._]/.test(file) && /\.jpe?g$/i.test(file))
+                  .map(file => crawl(join(source, file)))
+                ).then(res, rej);
+            });
+        }
+      });
+    });
+    crawl(source).catch(error);
+  }
   else {
     const crawl = (source, dest, options) => new Promise((res, rej) => {
       stat(source, (err, stat) => {
@@ -87,8 +113,8 @@ else {
           if (stat.isFile())
             ucompress(source, dest, options).then(res, rej);
           /* istanbul ignore else */
-          else if (stat.isDirectory())
-            mkdir(dest, {recursive: true}, err => {
+          else if (stat.isDirectory()) {
+            const onDir = err => {
               if (err)
                 rej(err);
               else
@@ -102,7 +128,12 @@ else {
                       .map(file => crawl(join(source, file), join(dest, file), options))
                     ).then(res, rej);
                 });
-            });
+            };
+            if (samePath)
+              onDir(null);
+            else
+              mkdir(dest, {recursive: true}, onDir);
+          }
         }
       });
     });
