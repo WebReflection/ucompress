@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const {mkdir, readdir, stat} = require('fs');
+const {mkdir, readdir, stat, statSync} = require('fs');
 const {join, resolve} = require('path');
 
 const ucompress = require('./cjs/index.js');
@@ -75,7 +75,7 @@ else {
   };
   if (headers && dest === source)
     ucompress.createHeaders(dest).catch(error);
-  else if (preview && dest === source)
+  else if (preview && dest === source && statSync(source).isFile())
     blur(dest).catch(error);
   else {
     const crawl = (source, dest, options) => new Promise((res, rej) => {
