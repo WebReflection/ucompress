@@ -77,7 +77,6 @@ else {
   if (headers && samePath)
     ucompress.createHeaders(dest).catch(error);
   else if (preview && samePath) {
-    // blur(dest).catch(error);
     const crawl = source => new Promise((res, rej) => {
       stat(source, (err, stat) => {
         /* istanbul ignore if */
