@@ -4,6 +4,7 @@ const {mkdir, readdir, stat} = require('fs');
 const {join, resolve} = require('path');
 
 const ucompress = require('./cjs/index.js');
+const blur = require('./cjs/preview.js');
 
 let source = '.';
 let dest = '';
@@ -41,6 +42,7 @@ for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
       headers = true;
       break;
     case /^--with-preview$/.test(argv[i]):
+    case /^--preview$/.test(argv[i]):
       preview = true;
       break;
     case /^--help$/.test(argv[i]):
@@ -51,7 +53,7 @@ for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
   }
 }
 
-if (headers && !dest)
+if ((headers || preview) && !dest)
   dest = source;
 
 if (help || !dest) {
@@ -63,6 +65,7 @@ if (help || !dest) {
   console.log(`  --max-height X     \x1b[2m# max images height in pixels\x1b[0m`);
   console.log(`  --create-headers   \x1b[2m# creates .json files to serve as headers\x1b[0m`);
   console.log(`  --with-preview     \x1b[2m# enables *.preview.jpeg images\x1b[0m`);
+  console.log(`  --preview          \x1b[2m# alias for --with-preview\x1b[0m`);
   console.log('');
 }
 else {
@@ -72,6 +75,8 @@ else {
   };
   if (headers && dest === source)
     ucompress.createHeaders(dest).catch(error);
+  else if (preview && dest === source)
+    blur(dest).catch(error);
   else {
     const crawl = (source, dest, options) => new Promise((res, rej) => {
       stat(source, (err, stat) => {

@@ -9,7 +9,6 @@ const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* i
 const blur = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./preview.js'));
 
 const fit = sharp.fit.inside;
-const jpegtranArgs = ['-optimize', '-outfile'];
 const withoutEnlargement = true;
 
 const optimize = (args, source, dest) => new Promise((res, rej) => {

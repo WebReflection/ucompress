@@ -8,7 +8,6 @@ import headers from './headers.js';
 import blur from './preview.js';
 
 const fit = sharp.fit.inside;
-const jpegtranArgs = ['-optimize', '-outfile'];
 const withoutEnlargement = true;
 
 const optimize = (args, source, dest) => new Promise((res, rej) => {
