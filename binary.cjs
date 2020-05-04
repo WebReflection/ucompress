@@ -93,7 +93,9 @@ else {
                 rej(err);
               else
                 Promise.all(files
-                  .filter(file => !/^[._]/.test(file) && /\.jpe?g$/i.test(file))
+                  .filter(file => !/^[._]/.test(file) &&
+                                  /\.jpe?g$/i.test(file) &&
+                                  !/\.preview\.jpe?g$/i.test(file))
                   .map(file => crawl(join(source, file)))
                 ).then(res, rej);
             });
