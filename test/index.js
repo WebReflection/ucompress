@@ -117,16 +117,6 @@ function lastChecks() {
   })
   .catch(() => ok`wrong CSS destination fails as expected`);
 
-  ucompress.js(
-    join(__dirname, 'source', 'index.js'),
-    join(__dirname, 'shenanigans', `index.js`)
-  )
-  .then(dest => {
-    error`\`\`\`${dest}\`\`\` did not exists, this should've failed!`;
-    process.exit(1);
-  })
-  .catch(() => ok`wrong JS destination fails as expected`);
-
   ucompress.html(
     join(__dirname, 'source', 'index.html'),
     join(__dirname, 'shenanigans', `index.html`)

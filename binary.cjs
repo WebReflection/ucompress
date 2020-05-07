@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 const {mkdir, readdir, stat} = require('fs');
-const {join, resolve} = require('path');
+const {basename, extname, join, resolve} = require('path');
+
+const umap = require('umap');
+const jsModules = umap(new Map);
 
 const ucompress = require('./cjs/index.js');
 const blur = require('./cjs/preview.js');
@@ -114,10 +117,14 @@ else {
         if (err)
           rej(err);
         else {
-          if (stat.isFile())
-            ucompress(source, dest, options).then(res, rej);
+          if (stat.isFile()) {
+            if (/\.m?js$/i.test(extname(source)))
+              ucompress.js(source, dest, options, jsModules).then(res, rej);
+            else
+              ucompress(source, dest, options).then(res, rej);
+          }
           /* istanbul ignore else */
-          else if (stat.isDirectory()) {
+          else if (stat.isDirectory() && basename(source) !== 'node_modules') {
             const onDir = err => {
               if (err)
                 rej(err);
@@ -138,6 +145,8 @@ else {
             else
               mkdir(dest, {recursive: true}, onDir);
           }
+          else
+            res(dest);
         }
       });
     });
