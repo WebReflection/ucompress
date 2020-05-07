@@ -1,5 +1,5 @@
 import {execFile} from 'child_process';
-import {unlink, write} from 'fs';
+import {unlink, write, copyFile} from 'fs';
 
 import jpegtran from 'jpegtran-bin';
 import sharp from 'sharp';
@@ -12,8 +12,15 @@ const withoutEnlargement = true;
 
 const optimize = (args, source, dest) => new Promise((res, rej) => {
   execFile(jpegtran, args.concat(dest, source), err => {
-    if (err) rej(err);
-    else res(dest);
+    if (err) {
+      copyFile(source, dest, err => {
+        /* istanbul ignore else */
+        if (err) rej(err);
+        else res(dest);
+      });
+    }
+    else
+      res(dest);
   });
 });
 

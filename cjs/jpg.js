@@ -1,6 +1,6 @@
 'use strict';
 const {execFile} = require('child_process');
-const {unlink, write} = require('fs');
+const {unlink, write, copyFile} = require('fs');
 
 const jpegtran = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('jpegtran-bin'));
 const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
@@ -13,8 +13,15 @@ const withoutEnlargement = true;
 
 const optimize = (args, source, dest) => new Promise((res, rej) => {
   execFile(jpegtran, args.concat(dest, source), err => {
-    if (err) rej(err);
-    else res(dest);
+    if (err) {
+      copyFile(source, dest, err => {
+        /* istanbul ignore else */
+        if (err) rej(err);
+        else res(dest);
+      });
+    }
+    else
+      res(dest);
   });
 });
 
