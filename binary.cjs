@@ -13,6 +13,7 @@ let source = '.';
 let dest = '';
 let headers = false;
 let help = false;
+let noMinify = false;
 let preview = false;
 let maxWidth, maxHeight;
 
@@ -48,6 +49,9 @@ for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
     case /^--preview$/.test(argv[i]):
       preview = true;
       break;
+    case /^--no-minify$/.test(argv[i]):
+      noMinify = true;
+      break;
     case /^--help$/.test(argv[i]):
     default:
       help = true;
@@ -69,6 +73,7 @@ if (help || !dest) {
   console.log(`  --create-headers   \x1b[2m# creates .json files to serve as headers\x1b[0m`);
   console.log(`  --with-preview     \x1b[2m# enables *.preview.jpeg images\x1b[0m`);
   console.log(`  --preview          \x1b[2m# alias for --with-preview\x1b[0m`);
+  console.log(`  --no-minify        \x1b[2m# avoid source code minification\x1b[0m`);
   console.log('');
   console.log('\x1b[1m\x1b[2mPlease note:\x1b[0m\x1b[2m if source and dest are the same, both \x1b[0m--create-headers');
   console.log('\x1b[2mand \x1b[0m--with-preview\x1b[2m, or \x1b[0m--preview\x1b[2m, will \x1b[1mnot\x1b[0m\x1b[2m compress any file.\x1b[0m');
@@ -150,7 +155,7 @@ else {
         }
       });
     });
-    crawl(source, dest, {maxWidth, maxHeight, preview})
+    crawl(source, dest, {maxWidth, maxHeight, preview, noMinify})
       .then(() => headers && ucompress.createHeaders(dest).catch(error))
       .catch(error);
   }

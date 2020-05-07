@@ -19,8 +19,12 @@ export default (source, dest, options = {}) => new Promise((res, rej) => {
     if (err)
       rej(err);
     else {
+      /* istanbul ignore next */
+      const {css} = options.noMinify ?
+                      {css: data} :
+                      csso.minify(data);
       // csso apparently has no way to detect errors
-      writeFile(dest, csso.minify(data).css, err => {
+      writeFile(dest, css, err => {
         if (err)
           rej(err);
         else if (options.createFiles)

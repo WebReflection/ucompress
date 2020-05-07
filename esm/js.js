@@ -1,5 +1,6 @@
 import {mkdir, readFile, writeFile} from 'fs';
-import {basename, dirname, join, resolve} from 'path';
+import {platform} from 'os';
+import {dirname, join, resolve} from 'path';
 
 import uglify from 'uglify-es';
 import umap from 'umap';
@@ -11,16 +12,23 @@ import compress from './compress.js';
 const {require: $require} = umeta(import.meta);
 const uglifyArgs = {output: {comments: /^!/}};
 
+const getURL = (path, index) => platform() === 'win32' ?
+  /* istanbul ignore next */
+  resolve(`C:\\${path}`, index).replace(/^C:\//, '').replace(/\\(?!\s)/g, '/') :
+  resolve(`/${path}`, index)
+;
+
 const minify = (source, options) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
     else {
+      const content = data.toString();
       /* istanbul ignore if */
-      if (options.noMinification)
-        res(data.toString());
+      if (options.noMinify)
+        res(content);
       else {
-        const {code, error} = uglify.minify(data.toString(), uglifyArgs);
+        const {code, error} = uglify.minify(content, uglifyArgs);
         if (error)
           rej(error);
         else
@@ -62,8 +70,7 @@ compressed.add('.mjs');
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
 const JS = (
-  source, dest,
-  /* istanbul ignore next */ options = {},
+  source, dest, options = {},
   /* istanbul ignore next */ known = umap(new Map)
 ) => known.get(dest) || known.set(dest, minify(source, options).then(
   code => {
@@ -99,7 +106,7 @@ const JS = (
             const i = path.lastIndexOf('node_modules');
             /* istanbul ignore if */
             if (i < 0)
-              throw new Error('node_modules not found');
+              throw new Error('node_modules folder not found');
             const {exports: e, module: m, main} = $require(
               join(path, 'package.json')
             );
@@ -115,9 +122,7 @@ const JS = (
                               '$1$2$1'
                             );
             modules.push(JS(newSource, newDest, options, known));
-            content = `${quote}${
-              resolve(`/${path}`, index).replace(/\\+/g, '/')
-            }${quote}`;
+            content = `${quote}${getURL(path, index)}${quote}`;
           }
           catch ({message}) {
             console.warn(`unable to import "${module}"`, message);

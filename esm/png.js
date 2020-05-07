@@ -30,7 +30,7 @@ const optimize = (source, dest) => new Promise((res, rej) => {
  * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-export default (source, dest, /* istanbul ignore next */ options = {}) =>
+export default (source, dest, options = {}) =>
   new Promise((res, rej) => {
     const {maxWidth: width, maxHeight: height, createFiles} = options;
     const done = () => res(dest);

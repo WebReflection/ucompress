@@ -23,14 +23,18 @@ compressed.add('.html');
  * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-module.exports = (source, dest, /* istanbul ignore next */options = {}) =>
+module.exports = (source, dest, options = {}) =>
   new Promise((res, rej) => {
     readFile(source, (err, file) => {
       if (err)
         rej(err);
       else {
         try {
-          writeFile(dest, html.minify(file.toString(), htmlArgs), err => {
+          /* istanbul ignore next */
+          const content = options.noMinify ?
+                            file :
+                            html.minify(file.toString(), htmlArgs);
+          writeFile(dest, content, err => {
             if (err)
               rej(err);
             else if (options.createFiles)

@@ -15,7 +15,7 @@ compressed.add('.svg');
  * @param {Options} [options] Options to deal with extra computation.
  * @return {Promise<string>} A promise that resolves with the destination file.
  */
-module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
+module.exports = (source, dest, options = {}) =>
   new Promise((res, rej) => {
     readFile(source, (err, file) => {
       if (err)

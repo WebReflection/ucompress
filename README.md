@@ -7,7 +7,7 @@
 
 <sup>**Social Media Photo by [Kevin Borrill](https://unsplash.com/@kev2480) on [Unsplash](https://unsplash.com/)**</sup>
 
-A <em>micro</em>, all-in-one, compressor for common Web files.
+A <em>micro</em>, all-in-one, compressor for common Web files, resolving automatically _JavaScript_ imports, when these are static.
 
 ```js
 import ucompress from 'ucompress';
@@ -30,7 +30,7 @@ ucompress.copy(source, dest).then(dest => console.log(dest));
   * **gif** files via [gifsicle](https://www.npmjs.com/package/gifsicle)
   * **html** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
   * **jpg** or **jpeg** files via [jpegtran-bin](https://www.npmjs.com/package/jpegtran-bin)
-  * **js** files via [uglify-es](https://www.npmjs.com/package/uglify-es)
+  * **js** or **mjs** files via [uglify-es](https://www.npmjs.com/package/uglify-es)
   * **png** files via [pngquant-bin](https://www.npmjs.com/package/pngquant-bin)
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
   * **xml** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
@@ -44,11 +44,12 @@ The optional third `options` _object_ parameter can contain any of the following
   * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
   * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
   * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures
+  * `noMinify`, a _boolean_ parameter, false by default, that keeps the `.js`, `.css`, and `.html` source intact, still performing other changes, such as `.js` imports
 
 
 #### About `ucompress.createHeaders(path[, headers])`
 
-This method creates headers for a specific file, or all files within a folder, excluding files that starts with a `.` dot or an `_` underscore.
+This method creates headers for a specific file, or all files within a folder, excluding files that starts with a `.` dot, an `_` underscore, or files within a `node_modules` folder (_you know, that hole that should never fully land in production_).
 
 ```js
 ucompress.createHeaders(
