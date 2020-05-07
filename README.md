@@ -69,6 +69,7 @@ The following file extensions, available via the `ucompress.encoded` _Set_, will
   * **.css**
   * **.html**
   * **.js**
+  * **.mjs**
   * **.json**
   * **.md**
   * **.svg**

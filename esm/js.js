@@ -8,6 +8,7 @@ import compress from './compress.js';
 const uglifyArgs = {output: {comments: /^!/}};
 
 compressed.add('.js');
+compressed.add('.mjs');
 
 /**
  * Create a file after minifying it via `uglify-es`.

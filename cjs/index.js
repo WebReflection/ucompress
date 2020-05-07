@@ -64,6 +64,7 @@ const ucompress = (source, dest, options = {}) => {
       method = jpg;
       break;
     case '.js':
+    case '.mjs':
       method = js;
       break;
     case '.png':
@@ -92,6 +93,7 @@ ucompress.htm = html;
 ucompress.jpg = jpg;
 ucompress.jpeg = jpg;
 ucompress.js = js;
+ucompress.mjs = js;
 ucompress.png = png;
 ucompress.svg = svg;
 ucompress.xml = xml;

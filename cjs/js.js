@@ -9,6 +9,7 @@ const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 const uglifyArgs = {output: {comments: /^!/}};
 
 compressed.add('.js');
+compressed.add('.mjs');
 
 /**
  * Create a file after minifying it via `uglify-es`.
