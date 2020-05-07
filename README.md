@@ -47,7 +47,14 @@ The optional third `options` _object_ parameter can contain any of the following
   * `noMinify`, a _boolean_ parameter, false by default, that keeps the `.js`, `.css`, and `.html` source intact, still performing other changes, such as `.js` imports
 
 
-#### About `ucompress.createHeaders(path[, headers])`
+### About Automatic Modules Resolution
+
+If your modules are published as [dual-module](https://medium.com/@WebReflection/a-nodejs-dual-module-deep-dive-8f94ff56210e), or if you have a `module` field in your `package.json`, and it points at an _ESM_ compatible file, as it should, or if you have a `type` field equal to `module` and a `main` that points at an _ESM_ compatible, or if you have an `exports` field which `import` resolves to an _ESM_ compatible module, _µcompress_ will resolve that entry point automatically.
+
+In every other case, the _import_ will be left untouched.
+
+
+### About `ucompress.createHeaders(path[, headers])`
 
 This method creates headers for a specific file, or all files within a folder, excluding files that starts with a `.` dot, an `_` underscore, or files within a `node_modules` folder (_you know, that hole that should never fully land in production_).
 

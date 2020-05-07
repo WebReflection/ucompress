@@ -107,11 +107,11 @@ const JS = (
             /* istanbul ignore if */
             if (i < 0)
               throw new Error('node_modules folder not found');
-            const {exports: e, module: m, main} = $require(
+            const {exports: e, module: m, main, type} = $require(
               join(path, 'package.json')
             );
             /* istanbul ignore next */
-            const index = (e && e.import) || m || main;
+            const index = (e && e.import) || m || (type === 'module' && main);
             /* istanbul ignore if */
             if (!index)
               throw new Error('no entry file found');
