@@ -8,7 +8,9 @@
     "build": "npm run cjs && npm run test",
     "cjs": "ascjs --no-default esm cjs",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
-    "test": "rm -rf test/dest && mkdir -p test/dest && nyc node test/index.js"
+    "clean:dest": "rm -rf test/dest && mkdir -p test/dest",
+    "clean:prepared": "rm -rf test/prepared/text.txt.* && rm -rf test/prepared/recursive/text.txt.*",
+    "test": "npm run clean:prepared && npm run clean:dest && nyc node test/index.js"
   },
   "keywords": [
     "minify",
