@@ -5,13 +5,7 @@ const html = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* ista
 
 const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
 const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
-
-const htmlArgs = {
-  collapseWhitespace: true,
-  html5: true,
-  removeAttributeQuotes: true,
-  removeComments: true
-};
+const htmlArgs = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html-minifier.js'));
 
 compressed.add('.htm');
 compressed.add('.html');

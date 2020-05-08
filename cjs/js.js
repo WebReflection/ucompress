@@ -10,14 +10,10 @@ const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* ist
 
 const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
 const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
+const minifyOptions = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html-minifier.js'));
 
 const {require: $require} = umeta(({url: require('url').pathToFileURL(__filename).href}));
 const terserArgs = {output: {comments: /^!/}};
-const htmlArgs = {
-  minifyOptions: {
-    keepClosingSlash: true
-  }
-};
 const isWindows = platform() === 'win32';
 
 const minify = (source, options) => new Promise((res, rej) => {
@@ -31,7 +27,7 @@ const minify = (source, options) => new Promise((res, rej) => {
         res(content);
       else {
         try {
-          const mini = minifyHTMLLiterals(content, htmlArgs);
+          const mini = minifyHTMLLiterals(content, {minifyOptions});
           const {code, error} = terser.minify(
             /* istanbul ignore next */
             mini ? mini.code : content,

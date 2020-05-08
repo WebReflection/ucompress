@@ -4,13 +4,7 @@ import html from 'html-minifier';
 
 import compressed from './compressed.js';
 import compress from './compress.js';
-
-const htmlArgs = {
-  collapseWhitespace: true,
-  html5: true,
-  removeAttributeQuotes: true,
-  removeComments: true
-};
+import htmlArgs from './html-minifier.js';
 
 compressed.add('.htm');
 compressed.add('.html');
