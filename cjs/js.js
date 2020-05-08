@@ -1,7 +1,7 @@
 'use strict';
 const {mkdir, readFile, writeFile} = require('fs');
 const {platform} = require('os');
-const {dirname, join, resolve} = require('path');
+const {dirname, join, relative, resolve} = require('path');
 
 const uglify = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('uglify-es'));
 const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
@@ -12,12 +12,7 @@ const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 
 const {require: $require} = umeta(({url: require('url').pathToFileURL(__filename).href}));
 const uglifyArgs = {output: {comments: /^!/}};
-
-const getURL = (path, index) => platform() === 'win32' ?
-  /* istanbul ignore next */
-  resolve(`C:\\${path}`, index).replace(/^C:\//, '').replace(/\\(?!\s)/g, '/') :
-  resolve(`/${path}`, index)
-;
+const isWindows = platform() === 'win32';
 
 const minify = (source, options) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
@@ -38,6 +33,9 @@ const minify = (source, options) => new Promise((res, rej) => {
     }
   });
 });
+
+/* istanbul ignore next */
+const noBackSlashes = s => isWindows ? s.replace(/\\(?!\s)/g, '/') : s;
 
 const saveCode = (source, dest, code, options) =>
   new Promise((res, rej) => {
@@ -72,7 +70,9 @@ compressed.add('.mjs');
  */
 const JS = (
   source, dest, options = {},
-  /* istanbul ignore next */ known = umap(new Map)
+  /* istanbul ignore next */ known = umap(new Map),
+  initialSource = dirname(source),
+  initialDest = dirname(dest)
 ) => known.get(dest) || known.set(dest, minify(source, options).then(
   code => {
     const re = /(["'`])(?:(?=(\\?))\2.)*?\1/g;
@@ -96,7 +96,7 @@ const JS = (
         if (/^[a-z@][a-z0-9/._-]+$/i.test(module)) {
           try {
             const {length} = module;
-            let path = $require.resolve(module, {paths: [baseSource]});
+            let path = $require.resolve(module, {paths: [initialSource]});
             let oldPath = path;
             do path = dirname(oldPath);
             while (
@@ -117,13 +117,15 @@ const JS = (
             if (!index)
               throw new Error('no entry file found');
             const newSource = resolve(path, index);
-            const newDest = resolve(baseDest, path = path.slice(i), index)
-                            .replace(
-                              /(\/|\\)(node_modules)\1.*\1\2\1/,
-                              '$1$2$1'
-                            );
-            modules.push(JS(newSource, newDest, options, known));
-            content = `${quote}${getURL(path, index)}${quote}`;
+            const newDest = resolve(initialDest, path.slice(i), index);
+            modules.push(JS(
+              newSource, newDest,
+              options, known,
+              initialSource, initialDest
+            ));
+            path = noBackSlashes(relative(dirname(source), newSource));
+            /* istanbul ignore next */
+            content = `${quote}${path[0] === '.' ? path : `./${path}`}${quote}`;
           }
           catch ({message}) {
             console.warn(`unable to import "${module}"`, message);
@@ -133,7 +135,8 @@ const JS = (
           modules.push(JS(
             resolve(baseSource, module),
             resolve(baseDest, module),
-            options, known
+            options, known,
+            initialSource, initialDest
           ));
         }
       }

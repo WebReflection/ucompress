@@ -116,6 +116,8 @@ else {
     crawl(source).catch(error);
   }
   else {
+    const jsSource = source;
+    const jsDest = dest;
     const crawl = (source, dest, options) => new Promise((res, rej) => {
       stat(source, (err, stat) => {
         /* istanbul ignore if */
@@ -124,9 +126,11 @@ else {
         else {
           if (stat.isFile()) {
             if (/\.m?js$/i.test(extname(source)))
-              ucompress.js(source, dest, options, jsModules).then(res, rej);
+              ucompress.js(source, dest, options, jsModules, jsSource, jsDest)
+                .then(res, rej);
             else
-              ucompress(source, dest, options).then(res, rej);
+              ucompress(source, dest, options)
+                .then(res, rej);
           }
           /* istanbul ignore else */
           else if (stat.isDirectory() && basename(source) !== 'node_modules') {
