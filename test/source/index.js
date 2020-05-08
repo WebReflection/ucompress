@@ -2,8 +2,10 @@ import "./index.mjs";
 
 import "non-existent";
 
-import("uhtml");
-
-function test() {
-  console.log('test');
-}
+import("uhtml").then(({render, html}) => {
+  render(document.body, html`
+    <div>
+      Hello World!
+    </div>
+  `);
+});

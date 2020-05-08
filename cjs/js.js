@@ -3,6 +3,7 @@ const {mkdir, readFile, writeFile} = require('fs');
 const {platform} = require('os');
 const {dirname, join, relative, resolve} = require('path');
 
+const {minifyHTMLLiterals} = require('minify-html-literals');
 const terser = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('terser'));
 const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
 const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
@@ -24,11 +25,21 @@ const minify = (source, options) => new Promise((res, rej) => {
       if (options.noMinify)
         res(content);
       else {
-        const {code, error} = terser.minify(content, terserArgs);
-        if (error)
+        try {
+          const mini = minifyHTMLLiterals(content);
+          const {code, error} = terser.minify(
+            /* istanbul ignore next */
+            mini ? mini.code : content,
+            terserArgs
+          );
+          if (error)
+            throw error;
+          else
+            res(code);
+        }
+        catch (error) {
           rej(error);
-        else
-          res(code);
+        }
       }
     }
   });

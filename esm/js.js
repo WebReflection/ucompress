@@ -2,6 +2,7 @@ import {mkdir, readFile, writeFile} from 'fs';
 import {platform} from 'os';
 import {dirname, join, relative, resolve} from 'path';
 
+import {minifyHTMLLiterals} from 'minify-html-literals';
 import terser from 'terser';
 import umap from 'umap';
 import umeta from 'umeta';
@@ -23,11 +24,21 @@ const minify = (source, options) => new Promise((res, rej) => {
       if (options.noMinify)
         res(content);
       else {
-        const {code, error} = terser.minify(content, terserArgs);
-        if (error)
+        try {
+          const mini = minifyHTMLLiterals(content);
+          const {code, error} = terser.minify(
+            /* istanbul ignore next */
+            mini ? mini.code : content,
+            terserArgs
+          );
+          if (error)
+            throw error;
+          else
+            res(code);
+        }
+        catch (error) {
           rej(error);
-        else
-          res(code);
+        }
       }
     }
   });
