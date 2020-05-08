@@ -2,7 +2,7 @@ import {mkdir, readFile, writeFile} from 'fs';
 import {platform} from 'os';
 import {dirname, join, relative, resolve} from 'path';
 
-import uglify from 'uglify-es';
+import terser from 'terser';
 import umap from 'umap';
 import umeta from 'umeta';
 
@@ -10,7 +10,7 @@ import compressed from './compressed.js';
 import compress from './compress.js';
 
 const {require: $require} = umeta(import.meta);
-const uglifyArgs = {output: {comments: /^!/}};
+const terserArgs = {output: {comments: /^!/}};
 const isWindows = platform() === 'win32';
 
 const minify = (source, options) => new Promise((res, rej) => {
@@ -23,7 +23,7 @@ const minify = (source, options) => new Promise((res, rej) => {
       if (options.noMinify)
         res(content);
       else {
-        const {code, error} = uglify.minify(content, uglifyArgs);
+        const {code, error} = terser.minify(content, terserArgs);
         if (error)
           rej(error);
         else

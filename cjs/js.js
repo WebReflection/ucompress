@@ -3,7 +3,7 @@ const {mkdir, readFile, writeFile} = require('fs');
 const {platform} = require('os');
 const {dirname, join, relative, resolve} = require('path');
 
-const uglify = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('uglify-es'));
+const terser = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('terser'));
 const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
 const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
 
@@ -11,7 +11,7 @@ const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /
 const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
 
 const {require: $require} = umeta(({url: require('url').pathToFileURL(__filename).href}));
-const uglifyArgs = {output: {comments: /^!/}};
+const terserArgs = {output: {comments: /^!/}};
 const isWindows = platform() === 'win32';
 
 const minify = (source, options) => new Promise((res, rej) => {
@@ -24,7 +24,7 @@ const minify = (source, options) => new Promise((res, rej) => {
       if (options.noMinify)
         res(content);
       else {
-        const {code, error} = uglify.minify(content, uglifyArgs);
+        const {code, error} = terser.minify(content, terserArgs);
         if (error)
           rej(error);
         else

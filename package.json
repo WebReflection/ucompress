@@ -45,10 +45,11 @@
     "html-minifier": "^4.0.0",
     "jpegtran-bin": "^4.0.0",
     "mime-types": "^2.1.27",
+    "minify-html-literals": "^1.3.0",
     "pngquant-bin": "^5.0.2",
     "sharp": "^0.25.2",
     "svgo": "^1.3.2",
-    "uglify-es": "^3.3.9",
+    "terser": "^4.6.13",
     "umap": "^1.0.2",
     "umeta": "^0.2.3"
   },
