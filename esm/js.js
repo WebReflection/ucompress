@@ -95,7 +95,7 @@ const JS = (
         if (/^[a-z@][a-z0-9/._-]+$/i.test(module)) {
           try {
             const {length} = module;
-            let path = $require.resolve(module, {paths: [initialSource]});
+            let path = $require.resolve(module, {paths: [baseSource]});
             let oldPath = path;
             do path = dirname(oldPath);
             while (

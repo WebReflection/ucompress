@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const {mkdir, readdir, stat} = require('fs');
-const {basename, extname, join, resolve} = require('path');
+const {basename, dirname, extname, join, resolve} = require('path');
 
 const umap = require('umap');
 const jsModules = umap(new Map);
@@ -116,8 +116,9 @@ else {
     crawl(source).catch(error);
   }
   else {
-    const jsSource = source;
-    const jsDest = dest;
+    let jsSource = source;
+    let jsDest = dest;
+    let checkEntry = true;
     const crawl = (source, dest, options) => new Promise((res, rej) => {
       stat(source, (err, stat) => {
         /* istanbul ignore if */
@@ -125,6 +126,11 @@ else {
           rej(err);
         else {
           if (stat.isFile()) {
+            if (checkEntry) {
+              checkEntry = false;
+              jsSource = dirname(jsSource);
+              jsDest = dirname(jsDest);
+            }
             if (/\.m?js$/i.test(extname(source)))
               ucompress.js(source, dest, options, jsModules, jsSource, jsDest)
                 .then(res, rej);
@@ -134,6 +140,7 @@ else {
           }
           /* istanbul ignore else */
           else if (stat.isDirectory() && basename(source) !== 'node_modules') {
+            checkEntry = false;
             const onDir = err => {
               if (err)
                 rej(err);
