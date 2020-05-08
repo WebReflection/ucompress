@@ -12,6 +12,11 @@ import compress from './compress.js';
 
 const {require: $require} = umeta(import.meta);
 const terserArgs = {output: {comments: /^!/}};
+const htmlArgs = {
+  minifyOptions: {
+    keepClosingSlash: true
+  }
+};
 const isWindows = platform() === 'win32';
 
 const minify = (source, options) => new Promise((res, rej) => {
@@ -25,7 +30,7 @@ const minify = (source, options) => new Promise((res, rej) => {
         res(content);
       else {
         try {
-          const mini = minifyHTMLLiterals(content);
+          const mini = minifyHTMLLiterals(content, htmlArgs);
           const {code, error} = terser.minify(
             /* istanbul ignore next */
             mini ? mini.code : content,
