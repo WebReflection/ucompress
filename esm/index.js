@@ -9,6 +9,7 @@ import gif from './gif.js';
 import html from './html.js';
 import jpg from './jpg.js';
 import js from './js.js';
+import json from './json.js';
 import png from './png.js';
 import svg from './svg.js';
 import xml from './xml.js';
@@ -66,6 +67,9 @@ const ucompress = (source, dest, options = {}) => {
     case '.mjs':
       method = js;
       break;
+    case '.json':
+      method = json;
+      break;
     case '.png':
       method = png;
       break;
@@ -93,6 +97,7 @@ ucompress.jpg = jpg;
 ucompress.jpeg = jpg;
 ucompress.js = js;
 ucompress.mjs = js;
+ucompress.json = json;
 ucompress.png = png;
 ucompress.svg = svg;
 ucompress.xml = xml;

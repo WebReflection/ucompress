@@ -1,0 +1,12 @@
+{
+  "name": "ucompress",
+  "version": "0.14.7",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/ucompress.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/ucompress/issues"
+  },
+  "homepage": "https://github.com/WebReflection/ucompress#readme"
+}

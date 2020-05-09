@@ -7,7 +7,6 @@ const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
 
 compressed.add('.csv');
-compressed.add('.json');
 compressed.add('.md');
 compressed.add('.txt');
 compressed.add('.woff2');
