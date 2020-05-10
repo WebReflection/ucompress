@@ -24,7 +24,9 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
       else {
         /* istanbul ignore next */
         try {
-          writeFile(dest, stringify(parse(data.toString())), err => {
+          const content = options.noMinify ?
+                            data : stringify(parse(data.toString()));
+          writeFile(dest, content, err => {
             if (err)
               rej(err);
             else if (options.createFiles) {

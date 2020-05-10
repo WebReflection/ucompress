@@ -29,7 +29,9 @@ module.exports = (source, dest, /* istanbul ignore next */options = {}) =>
         rej(err);
       else {
         try {
-          writeFile(dest, html.minify(file.toString(), xmlArgs), err => {
+          const content = options.noMinify ?
+                            file : html.minify(file.toString(), xmlArgs);
+          writeFile(dest, content, err => {
             /* istanbul ignore next */
             if (err)
               rej(err);

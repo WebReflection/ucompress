@@ -21,20 +21,21 @@ module.exports = (source, dest, options = {}) =>
       if (err)
         rej(err);
       else {
-        (new SVGO).optimize(file).then(
-          ({data}) => {
-            writeFile(dest, data, err => {
-              if (err)
-                rej(err);
-              else if (options.createFiles)
-                compress(source, dest, 'text', options)
-                  .then(() => res(dest), rej);
-              else
-                res(dest);
-            });
-          },
-          rej
-        );
+        const onSVGO = ({data}) => {
+          writeFile(dest, data, err => {
+            if (err)
+              rej(err);
+            else if (options.createFiles)
+              compress(source, dest, 'text', options)
+                .then(() => res(dest), rej);
+            else
+              res(dest);
+          });
+        };
+        if (options.noMinify)
+          onSVGO({data: file});
+        else
+          (new SVGO).optimize(file).then(onSVGO, rej);
       }
     });
   });
