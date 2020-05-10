@@ -1,6 +1,6 @@
 import {mkdir, readFile, writeFile} from 'fs';
 import {platform} from 'os';
-import {dirname, join, relative, resolve} from 'path';
+import {basename, dirname, join, relative, resolve} from 'path';
 
 import {minifyHTMLLiterals} from 'minify-html-literals';
 import terser from 'terser';
@@ -12,8 +12,8 @@ import compress from './compress.js';
 import minifyOptions from './html-minifier.js';
 
 const {require: $require} = umeta(import.meta);
-const terserArgs = {output: {comments: /^!/}};
 const isWindows = platform() === 'win32';
+const terserArgs = {output: {comments: /^!/}};
 
 const minify = (source, options) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
@@ -23,19 +23,27 @@ const minify = (source, options) => new Promise((res, rej) => {
       const content = data.toString();
       /* istanbul ignore if */
       if (options.noMinify)
-        res(content);
+        res({code: content, map: ''});
       else {
         try {
           const mini = minifyHTMLLiterals(content, {minifyOptions});
-          const {code, error} = terser.minify(
+          const {code, error, map} = terser.minify(
             /* istanbul ignore next */
             mini ? mini.code : content,
-            terserArgs
+            options.sourceMap ?
+              {
+                ...terserArgs,
+                sourceMap: {
+                  filename: source,
+                  url: `${source}.map`
+                }
+              } :
+              terserArgs
           );
           if (error)
             throw error;
           else
-            res(code);
+            res({code, map: options.sourceMap ? map : ''});
         }
         catch (error) {
           rej(error);
@@ -71,6 +79,7 @@ const saveCode = (source, dest, code, options) =>
 
 compressed.add('.js');
 compressed.add('.mjs');
+compressed.add('.map');
 
 /**
  * Create a file after minifying it via `uglify-es`.
@@ -85,7 +94,7 @@ const JS = (
   initialSource = dirname(source),
   initialDest = dirname(dest)
 ) => known.get(dest) || known.set(dest, minify(source, options).then(
-  code => {
+  ({code, map}) => {
     const re = /(["'`])(?:(?=(\\?))\2.)*?\1/g;
     const baseSource = dirname(source);
     const baseDest = dirname(dest);
@@ -155,8 +164,14 @@ const JS = (
       i = next;
     }
     newCode.push(code.slice(i));
+    const smCode = newCode.join('').replace(source, basename(dest));
+    const smMap = map.replace(source, basename(dest));
     return Promise.all(
-      modules.concat(saveCode(source, dest, newCode.join(''), options))
+      modules.concat(
+        saveCode(source, dest, smCode, options),
+        smMap ?
+          saveCode(source, `${dest}.map`, smMap, options) : []
+      )
     ).then(
       () => dest,
       /* istanbul ignore next */

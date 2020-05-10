@@ -53,7 +53,8 @@ setTimeout(
                 createFiles: true,
                 maxWidth: 320,
                 maxHeight: 320,
-                preview: true
+                preview: true,
+                sourceMap: true
               }
             )
             .then(dest => ok(`\`${basename(dest)}\``))

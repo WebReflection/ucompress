@@ -130,6 +130,7 @@ The following file extensions, available via the `ucompress.encoded` _Set_, will
   * **.html**
   * **.js**
   * **.mjs**
+  * **.map**
   * **.json**
   * **.md**
   * **.svg**

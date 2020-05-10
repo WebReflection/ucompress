@@ -15,6 +15,7 @@ let headers = false;
 let help = false;
 let noMinify = false;
 let preview = false;
+let sourceMap = false;
 let maxWidth, maxHeight;
 
 for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
@@ -45,6 +46,10 @@ for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
     case /^--create-headers$/.test(argv[i]):
       headers = true;
       break;
+    case /^--with-source-map$/.test(argv[i]):
+    case /^--source-map$/.test(argv[i]):
+      sourceMap = true;
+      break;
     case /^--with-preview$/.test(argv[i]):
     case /^--preview$/.test(argv[i]):
       preview = true;
@@ -73,6 +78,8 @@ if (help || !dest) {
   console.log(`  --create-headers   \x1b[2m# creates .json files to serve as headers\x1b[0m`);
   console.log(`  --with-preview     \x1b[2m# enables *.preview.jpeg images\x1b[0m`);
   console.log(`  --preview          \x1b[2m# alias for --with-preview\x1b[0m`);
+  console.log(`  --with-source-map  \x1b[2m# generates source map\x1b[0m`);
+  console.log(`  --source-map       \x1b[2m# alias for --source-map\x1b[0m`);
   console.log(`  --no-minify        \x1b[2m# avoid source code minification\x1b[0m`);
   console.log('');
   console.log('\x1b[1m\x1b[2mPlease note:\x1b[0m\x1b[2m if source and dest are the same, both \x1b[0m--create-headers');
@@ -166,7 +173,7 @@ else {
         }
       });
     });
-    crawl(source, dest, {maxWidth, maxHeight, preview, noMinify})
+    crawl(source, dest, {maxWidth, maxHeight, preview, sourceMap, noMinify})
       .then(() => headers && ucompress.createHeaders(dest).catch(error))
       .catch(error);
   }

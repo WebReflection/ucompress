@@ -50,7 +50,7 @@ export default (source, dest, headers = {}) => new Promise((res, rej) => {
                 'Accept-Ranges': 'bytes',
                 'Cache-Control': 'public, max-age=0',
                 'Content-Type': lookup(ext) + (
-                  /^\.(?:css|html?|json|md|txt|xml|yml)$/.test(ext) ?
+                  /^\.(?:css|html?|js|mjs|json|map|md|txt|xml|yml)$/.test(ext) ?
                     '; charset=UTF-8' : ''
                 ),
                 'Content-Length': size,
