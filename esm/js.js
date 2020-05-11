@@ -17,24 +17,25 @@ const {require: $require} = umeta(import.meta);
 const isWindows = platform() === 'win32';
 const terserArgs = {module: true, output: {comments: /^!/}};
 
-const minify = (source, options) => new Promise((res, rej) => {
+const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
     else {
       const original = data.toString();
       /* istanbul ignore if */
-      if (options.noMinify)
+      if (noMinify)
         res({original, code: original, map: ''});
       else {
         try {
-          // TODO: find a way to integrate literals minification
-          // const mini = minifyHTMLLiterals(original, {minifyOptions});
+          const mini = sourceMap ?
+                        // TODO: find a way to integrate literals minification
+                        {code: original} :
+                        minifyHTMLLiterals(original, {minifyOptions});
           const {code, error, map} = terser.minify(
             /* istanbul ignore next */
-            // mini ? mini.code :
-            original,
-            options.sourceMap ?
+            mini ? mini.code : original,
+            sourceMap ?
               {
                 ...terserArgs,
                 sourceMap: {
@@ -47,7 +48,7 @@ const minify = (source, options) => new Promise((res, rej) => {
           if (error)
             throw error;
           else
-            res({original, code, map: options.sourceMap ? map : ''});
+            res({original, code, map: sourceMap ? map : ''});
         }
         catch (error) {
           rej(error);
