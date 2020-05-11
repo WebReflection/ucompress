@@ -11,25 +11,29 @@ import compressed from './compressed.js';
 import compress from './compress.js';
 import minifyOptions from './html-minifier.js';
 
+const {parse, stringify} = JSON;
+
 const {require: $require} = umeta(import.meta);
 const isWindows = platform() === 'win32';
-const terserArgs = {output: {comments: /^!/}};
+const terserArgs = {module: true, output: {comments: /^!/}};
 
 const minify = (source, options) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
     if (err)
       rej(err);
     else {
-      const content = data.toString();
+      const original = data.toString();
       /* istanbul ignore if */
       if (options.noMinify)
-        res({code: content, map: ''});
+        res({original, code: original, map: ''});
       else {
         try {
-          const mini = minifyHTMLLiterals(content, {minifyOptions});
+          // TODO: find a way to integrate literals minification
+          // const mini = minifyHTMLLiterals(original, {minifyOptions});
           const {code, error, map} = terser.minify(
             /* istanbul ignore next */
-            mini ? mini.code : content,
+            // mini ? mini.code :
+            original,
             options.sourceMap ?
               {
                 ...terserArgs,
@@ -43,7 +47,7 @@ const minify = (source, options) => new Promise((res, rej) => {
           if (error)
             throw error;
           else
-            res({code, map: options.sourceMap ? map : ''});
+            res({original, code, map: options.sourceMap ? map : ''});
         }
         catch (error) {
           rej(error);
@@ -94,7 +98,7 @@ const JS = (
   initialSource = dirname(source),
   initialDest = dirname(dest)
 ) => known.get(dest) || known.set(dest, minify(source, options).then(
-  ({code, map}) => {
+  ({original, code, map}) => {
     const re = /(["'`])(?:(?=(\\?))\2.)*?\1/g;
     const baseSource = dirname(source);
     const baseDest = dirname(dest);
@@ -164,14 +168,21 @@ const JS = (
       i = next;
     }
     newCode.push(code.slice(i));
-    const smCode = newCode.join('').replace(source, basename(dest));
-    const smMap = map.replace(source, basename(dest));
+    let smCode = newCode.join('');
+    if (options.sourceMap) {
+      const destSource = dest.replace(/(\.m?js)$/i, `$1.source$1`);
+      const json = parse(map);
+      const file = basename(dest);
+      json.file = file;
+      json.sources = [basename(destSource)];
+      smCode = smCode.replace(source, file);
+      modules.push(
+        saveCode(source, `${dest}.map`, stringify(json), options),
+        saveCode(source, destSource, original, options)
+      );
+    }
     return Promise.all(
-      modules.concat(
-        saveCode(source, dest, smCode, options),
-        smMap ?
-          saveCode(source, `${dest}.map`, smMap, options) : []
-      )
+      modules.concat(saveCode(source, dest, smCode, options))
     ).then(
       () => dest,
       /* istanbul ignore next */
