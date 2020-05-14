@@ -156,7 +156,8 @@ const JS = (
             console.warn(`unable to import "${module}"`, message);
           }
         }
-        else {
+        /* istanbul ignore else */
+        else if (!/^([a-z]+:)?\/\//i.test(module)) {
           modules.push(JS(
             resolve(baseSource, module),
             resolve(baseDest, module),
