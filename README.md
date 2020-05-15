@@ -76,6 +76,7 @@ Following the list of tools ued to optimized various files:
   * **jpg** or **jpeg** files via [jpegtran-bin](https://www.npmjs.com/package/jpegtran-bin) and/or [sharp](https://github.com/lovell/sharp)
   * **js** or **mjs** files via [terser](https://github.com/terser/terser) and [html-minifier](https://github.com/kangax/html-minifier)
   * **json** files are simply parsed and stringified so that white spaces get removed
+  * **md** files are transformed into their `.preview.html` version, if the _preview_ is enabled, through [marked](https://github.com/markedjs/marked)
   * **png** files via [pngquant-bin](https://www.npmjs.com/package/pngquant-bin)
   * **svg** files via [svgo](https://www.npmjs.com/package/svgo)
   * **xml** files via [html-minifier](https://www.npmjs.com/package/html-minifier)

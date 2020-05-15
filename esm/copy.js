@@ -6,7 +6,6 @@ import compress from './compress.js';
 import headers from './headers.js';
 
 compressed.add('.csv');
-compressed.add('.md');
 compressed.add('.txt');
 compressed.add('.woff2');
 compressed.add('.yml');
