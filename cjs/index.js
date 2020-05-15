@@ -11,6 +11,7 @@ const html = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* ista
 const jpg = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./jpg.js'));
 const js = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./js.js'));
 const json = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./json.js'));
+const md = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./md.js'));
 const png = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./png.js'));
 const svg = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./svg.js'));
 const xml = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./xml.js'));
@@ -71,6 +72,9 @@ const ucompress = (source, dest, options = {}) => {
     case '.json':
       method = json;
       break;
+    case '.md':
+      method = md;
+      break;
     case '.png':
       method = png;
       break;
@@ -99,6 +103,7 @@ ucompress.jpeg = jpg;
 ucompress.js = js;
 ucompress.mjs = js;
 ucompress.json = json;
+ucompress.md = md;
 ucompress.png = png;
 ucompress.svg = svg;
 ucompress.xml = xml;
