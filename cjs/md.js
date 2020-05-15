@@ -60,7 +60,7 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
             if (err)
               rej(err);
             else {
-              const htmlPreview = dest.replace(/\.md$/i, '.preview.html');
+              const htmlPreview = dest.replace(/\.md$/i, '.md.preview.html');
               writeFile(
                 htmlPreview,
                 html.minify(
