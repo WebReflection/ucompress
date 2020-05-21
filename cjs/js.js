@@ -35,7 +35,7 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
                         minifyHTMLLiterals(original, {minifyOptions});
           /* istanbul ignore next */
           const js = mini ? mini.code : original;
-          const module = /import|export/.test(js);
+          const module = /\b(?:import|export)\b/.test(js);
           const {code, error, map} = terser.minify(
             js,
             sourceMap ?
