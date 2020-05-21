@@ -15,7 +15,7 @@ const {parse, stringify} = JSON;
 
 const {require: $require} = umeta(import.meta);
 const isWindows = platform() === 'win32';
-const terserArgs = {module: true, output: {comments: /^!/}};
+const terserArgs = {output: {comments: /^!/}};
 
 const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
   readFile(source, (err, data) => {
@@ -32,18 +32,24 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
                         // TODO: find a way to integrate literals minification
                         {code: original} :
                         minifyHTMLLiterals(original, {minifyOptions});
+          /* istanbul ignore next */
+          const js = mini ? mini.code : original;
+          const module = /import|export/.test(js);
           const {code, error, map} = terser.minify(
-            /* istanbul ignore next */
-            mini ? mini.code : original,
+            js,
             sourceMap ?
               {
                 ...terserArgs,
+                module,
                 sourceMap: {
                   filename: source,
                   url: `${source}.map`
                 }
               } :
-              terserArgs
+              {
+                ...terserArgs,
+                module
+              }
           );
           if (error)
             throw error;

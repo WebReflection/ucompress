@@ -67,9 +67,9 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
                   <html lang="en">
                   <head>
                     <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <meta name="viewport" content="width=device-width,initial-scale=1.0">
                     <title>Preview: ${basename(source)}</title>
-                    <style>body{font-family:sans-serif;}</style>
+                    <style>body{font-family:sans-serif}</style>
                   </head>
                   <body>${md}</body>
                   </html>`,
