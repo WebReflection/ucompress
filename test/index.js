@@ -32,7 +32,7 @@ setTimeout(
         ucompress(
           join(__dirname, 'source', file),
           join(__dirname, 'dest', file),
-          {createFiles: true, noMinify: true}
+          {createFiles: true, noMinify: true, noImport: true}
         )
         .then(dest => ok(`\`${basename(dest)}\``))
         .catch(err => {

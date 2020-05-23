@@ -13,6 +13,7 @@ let source = '.';
 let dest = '';
 let headers = false;
 let help = false;
+let noImport = false;
 let noMinify = false;
 let preview = false;
 let sourceMap = false;
@@ -54,6 +55,9 @@ for (let {argv} = process, {length} = argv, i = 2; i < length; i++) {
     case /^--preview$/.test(argv[i]):
       preview = true;
       break;
+    case /^--no-imports?$/.test(argv[i]):
+      noImport = true;
+      break;
     case /^--no-minify$/.test(argv[i]):
       noMinify = true;
       break;
@@ -80,6 +84,7 @@ if (help || !dest) {
   console.log(`  --preview          \x1b[2m# alias for --with-preview\x1b[0m`);
   console.log(`  --with-source-map  \x1b[2m# generates source map\x1b[0m`);
   console.log(`  --source-map       \x1b[2m# alias for --source-map\x1b[0m`);
+  console.log(`  --no-import        \x1b[2m# avoid resolving imports\x1b[0m`);
   console.log(`  --no-minify        \x1b[2m# avoid source code minification\x1b[0m`);
   console.log('');
   console.log('\x1b[1m\x1b[2mPlease note:\x1b[0m\x1b[2m if source and dest are the same, both \x1b[0m--create-headers');
@@ -173,7 +178,11 @@ else {
         }
       });
     });
-    crawl(source, dest, {maxWidth, maxHeight, preview, sourceMap, noMinify})
+    crawl(
+      source,
+      dest,
+      {maxWidth, maxHeight, preview, sourceMap, noImport, noMinify}
+    )
       .then(() => headers && ucompress.createHeaders(dest).catch(error))
       .catch(error);
   }

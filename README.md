@@ -57,6 +57,7 @@ The optional third `options` _object_ parameter can contain any of the following
   * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
   * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
   * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures
+  * `noImport`, a _boolean_ parameter, false by default, that skips automatic _ESM_ `import` resolution, in case the site provides imports maps by itself
   * `noMinify`, a _boolean_ parameter, false by default, that keeps the `.js`, `.css`, and `.html` source intact, still performing other changes, such as `.js` imports
 
 
