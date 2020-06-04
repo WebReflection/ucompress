@@ -3,7 +3,7 @@ const {mkdir, readFile, writeFile} = require('fs');
 const {platform} = require('os');
 const {basename, dirname, join, relative, resolve} = require('path');
 
-const {minifyHTMLLiterals} = require('minify-html-literals');
+const mhl = require('minify-html-literals');
 const terser = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('terser'));
 const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
 const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
@@ -13,6 +13,7 @@ const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 const minifyOptions = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html-minifier.js'));
 
 const {parse, stringify} = JSON;
+const {minifyHTMLLiterals} = mhl;
 
 const {require: $require} = umeta(({url: require('url').pathToFileURL(__filename).href}));
 const isWindows = /^win/i.test(platform());

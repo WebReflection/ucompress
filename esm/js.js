@@ -2,7 +2,7 @@ import {mkdir, readFile, writeFile} from 'fs';
 import {platform} from 'os';
 import {basename, dirname, join, relative, resolve} from 'path';
 
-import {minifyHTMLLiterals} from 'minify-html-literals';
+import * as mhl from 'minify-html-literals';
 import terser from 'terser';
 import umap from 'umap';
 import umeta from 'umeta';
@@ -12,6 +12,7 @@ import compress from './compress.js';
 import minifyOptions from './html-minifier.js';
 
 const {parse, stringify} = JSON;
+const {minifyHTMLLiterals} = mhl;
 
 const {require: $require} = umeta(import.meta);
 const isWindows = /^win/i.test(platform());
