@@ -13,7 +13,7 @@ const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* 
 const minifyOptions = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html-minifier.js'));
 
 const {parse, stringify} = JSON;
-const {minifyHTMLLiterals} = mhl;
+const {minifyHTMLLiterals} = (mhl.default || mhl);
 
 const {require: $require} = umeta(({url: require('url').pathToFileURL(__filename).href}));
 const isWindows = /^win/i.test(platform());

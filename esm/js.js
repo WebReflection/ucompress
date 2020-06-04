@@ -12,7 +12,7 @@ import compress from './compress.js';
 import minifyOptions from './html-minifier.js';
 
 const {parse, stringify} = JSON;
-const {minifyHTMLLiterals} = mhl;
+const {minifyHTMLLiterals} = (mhl.default || mhl);
 
 const {require: $require} = umeta(import.meta);
 const isWindows = /^win/i.test(platform());
