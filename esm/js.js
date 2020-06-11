@@ -70,12 +70,14 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
   });
 });
 
+const webModules = path => path.replace(/\bnode_modules\b/g, 'web_modules');
+
 /* istanbul ignore next */
-const noBackSlashes = s => isWindows ? s.replace(/\\(?!\s)/g, '/') : s;
+const noBackSlashes = s => (isWindows ? s.replace(/\\(?!\s)/g, '/') : s);
 
 const saveCode = (source, dest, code, options) =>
   new Promise((res, rej) => {
-    dest = dest.replace(/\bnode_modules\b/g, 'web_modules');
+    dest = webModules(dest);
     mkdir(dirname(dest), {recursive: true}, err => {
       /* istanbul ignore if */
       if (err)
@@ -160,7 +162,9 @@ const JS = (
                 options, known,
                 initialSource, initialDest
               ));
-              path = noBackSlashes(relative(dirname(source), newSource));
+              path = webModules(
+                noBackSlashes(relative(dirname(source), newSource))
+              );
               /* istanbul ignore next */
               content = `${quote}${path[0] === '.' ? path : `./${path}`}${quote}`;
             }
