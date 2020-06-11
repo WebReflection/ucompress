@@ -76,6 +76,7 @@ const noBackSlashes = s => isWindows ? s.replace(/\\(?!\s)/g, '/') : s;
 
 const saveCode = (source, dest, code, options) =>
   new Promise((res, rej) => {
+    dest = dest.replace(/\bnode_modules\b/g, 'web_modules');
     mkdir(dirname(dest), {recursive: true}, err => {
       /* istanbul ignore if */
       if (err)
