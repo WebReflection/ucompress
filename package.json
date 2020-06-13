@@ -41,14 +41,13 @@
   },
   "dependencies": {
     "csso": "^4.0.3",
-    "gifsicle": "^5.1.0",
     "html-minifier": "^4.0.0",
     "jpegtran-bin": "^5.0.1",
     "marked": "^1.1.0",
     "mime-types": "^2.1.27",
     "minify-html-literals": "^1.3.1",
     "pngquant-bin": "^6.0.0",
-    "sharp": "^0.25.3",
+    "sharp": "^0.25.4",
     "svgo": "^1.3.2",
     "terser": "^4.7.0",
     "umap": "^1.0.2",
@@ -61,5 +60,8 @@
   "bugs": {
     "url": "https://github.com/WebReflection/ucompress/issues"
   },
-  "homepage": "https://github.com/WebReflection/ucompress#readme"
+  "homepage": "https://github.com/WebReflection/ucompress#readme",
+  "optionalDependencies": {
+    "gifsicle": "^5.1.0"
+  }
 }

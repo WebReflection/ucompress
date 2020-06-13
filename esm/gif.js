@@ -1,8 +1,19 @@
 import {execFile} from 'child_process';
+import {copyFile} from 'fs';
 
-import gifsicle from 'gifsicle';
+import umeta from 'umeta';
 
 import headers from './headers.js';
+
+const {require: cjs} = umeta(import.meta);
+
+let gifsicle = '';
+try {
+  gifsicle = cjs('gifsicle');
+}
+catch(meh) {
+  // gifsicle should be installed via npm 
+}
 
 /**
  * Create a file after optimizing via `gifsicle`.
@@ -13,7 +24,7 @@ import headers from './headers.js';
  */
 export default (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    execFile(gifsicle, ['-o', dest, source], err => {
+    const callback = err => {
       if (err)
         rej(err);
       else if (options.createFiles)
@@ -21,5 +32,10 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
           .then(() => res(dest), rej);
       else
         res(dest);
-    });
+    };
+    /* istanbul ignore else */
+    if (gifsicle)
+      execFile(gifsicle, ['-o', dest, source], callback);
+    else
+      copyFile(source, dest, callback);
   });

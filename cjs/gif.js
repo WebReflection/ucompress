@@ -1,9 +1,20 @@
 'use strict';
 const {execFile} = require('child_process');
+const {copyFile} = require('fs');
 
-const gifsicle = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('gifsicle'));
+const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
 
 const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
+
+const {require: cjs} = umeta(({url: require('url').pathToFileURL(__filename).href}));
+
+let gifsicle = '';
+try {
+  gifsicle = cjs('gifsicle');
+}
+catch(meh) {
+  // gifsicle should be installed via npm 
+}
 
 /**
  * Create a file after optimizing via `gifsicle`.
@@ -14,7 +25,7 @@ const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* i
  */
 module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
   new Promise((res, rej) => {
-    execFile(gifsicle, ['-o', dest, source], err => {
+    const callback = err => {
       if (err)
         rej(err);
       else if (options.createFiles)
@@ -22,5 +33,10 @@ module.exports = (source, dest, /* istanbul ignore next */ options = {}) =>
           .then(() => res(dest), rej);
       else
         res(dest);
-    });
+    };
+    /* istanbul ignore else */
+    if (gifsicle)
+      execFile(gifsicle, ['-o', dest, source], callback);
+    else
+      copyFile(source, dest, callback);
   });

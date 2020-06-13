@@ -56,7 +56,7 @@ The optional third `options` _object_ parameter can contain any of the following
   * `createFile`, a _boolean_ property, `false` by default, that will automatically pre-compress via _brotli_, _gzip_, and _deflate_, compatible files, plus it will create a `.json` file with pre-processed _headers_ details per each file
   * `maxWidth`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _width_ when it comes to _JPG_ or _PNG_ files
   * `maxHeight`, an _integer_ property, that if provided, it will reduce, if necessary, the destination image _height_ when it comes to _JPG_ or _PNG_ files
-  * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures
+  * `preview`, a _boolean_ parameter, false by default, that creates _JPG_ counter `.preview.jpg` files to be served instead of originals, enabling bandwidth saving, especially for very big pictures (example: [with-preview](https://github.com/WebReflection/with-preview/#readme))
   * `noImport`, a _boolean_ parameter, false by default, that skips automatic _ESM_ `import` resolution, in case the site provides imports maps by itself
   * `noMinify`, a _boolean_ parameter, false by default, that keeps the `.js`, `.css`, and `.html` source intact, still performing other changes, such as `.js` imports
 
@@ -72,7 +72,7 @@ If you'd like to use this module to serve files _CDN_ like, check **[µcdn](http
 Following the list of tools ued to optimized various files:
 
   * **css** files via [csso](https://www.npmjs.com/package/csso)
-  * **gif** files via [gifsicle](https://www.npmjs.com/package/gifsicle)
+  * **gif** files via [gifsicle](https://www.npmjs.com/package/gifsicle) as *optional dependency*
   * **html** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
   * **jpg** or **jpeg** files via [jpegtran-bin](https://www.npmjs.com/package/jpegtran-bin) and/or [sharp](https://github.com/lovell/sharp)
   * **js** or **mjs** files via [terser](https://github.com/terser/terser) and [html-minifier](https://github.com/kangax/html-minifier)
