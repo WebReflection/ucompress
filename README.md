@@ -74,7 +74,7 @@ Following the list of tools ued to optimized various files:
   * **css** files via [csso](https://www.npmjs.com/package/csso)
   * **gif** files via [gifsicle](https://www.npmjs.com/package/gifsicle) as *optional dependency*
   * **html** files via [html-minifier](https://www.npmjs.com/package/html-minifier)
-  * **jpg** or **jpeg** files via [jpegtran-bin](https://www.npmjs.com/package/jpegtran-bin) and/or [sharp](https://github.com/lovell/sharp)
+  * **jpg** or **jpeg** files via [sharp](https://github.com/lovell/sharp)
   * **js** or **mjs** files via [terser](https://github.com/terser/terser) and [html-minifier](https://github.com/kangax/html-minifier)
   * **json** files are simply parsed and stringified so that white spaces get removed
   * **md** files are transformed into their `.md.preview.html` version, if the _preview_ is enabled, through [marked](https://github.com/markedjs/marked)

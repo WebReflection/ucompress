@@ -1,7 +1,5 @@
-import {execFile} from 'child_process';
 import {unlink, write, copyFile} from 'fs';
 
-import jpegtran from 'jpegtran-bin';
 import sharp from 'sharp';
 
 import headers from './headers.js';
@@ -11,21 +9,20 @@ const fit = sharp.fit.inside;
 const withoutEnlargement = true;
 
 const optimize = (args, source, dest) => new Promise((res, rej) => {
-  execFile(jpegtran, args.concat(dest, source), err => {
-    if (err) {
+  sharp(source).jpeg(args).toFile(dest).then(
+    () => res(dest),
+    () => {
       copyFile(source, dest, err => {
         /* istanbul ignore else */
         if (err) rej(err);
         else res(dest);
       });
     }
-    else
-      res(dest);
-  });
+  );
 });
 
 /**
- * Create a file after optimizing via `jpegtran`.
+ * Create a file after optimizing via `sharp`.
  * @param {string} source The source JPG/JPEG file to optimize.
  * @param {string} dest The optimized destination file.
  * @param {Options} [options] Options to deal with extra computation.
@@ -51,8 +48,7 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       else done();
     };
     const writeHeaders = dest => headers(source, dest, options.headers);
-    const args = preview ? [] : ['-progressive'];
-    args.push('-optimize', '-outfile');
+    const args = {progressive: !preview};
     if (width || height) {
       sharp(source)
         .resize({width, height, fit, withoutEnlargement})
