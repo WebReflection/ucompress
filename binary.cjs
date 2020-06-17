@@ -181,9 +181,13 @@ else {
     crawl(
       source,
       dest,
-      {maxWidth, maxHeight, preview, sourceMap, noImport, noMinify}
+      {
+        createFiles: headers,
+        maxWidth, maxHeight,
+        preview, sourceMap,
+        noImport, noMinify
+      }
     )
-      .then(() => headers && ucompress.createHeaders(dest).catch(error))
       .catch(error);
   }
 }
