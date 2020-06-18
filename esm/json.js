@@ -23,7 +23,7 @@ export default (source, dest, /* istanbul ignore next */ options = {}) =>
       else {
         /* istanbul ignore next */
         try {
-          const content = options.noMinify ?
+          const content = options.noMinify || !/[\r\n]\s/.test(data) ?
                             data : stringify(parse(data.toString()));
           writeFile(dest, content, err => {
             if (err)
