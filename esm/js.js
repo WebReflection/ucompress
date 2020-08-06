@@ -151,7 +151,7 @@ const JS = (
                 join(path, 'package.json')
               );
               /* istanbul ignore next */
-              const index = (e && e.import) || m || (type === 'module' && main);
+              const index = (e && (e.import || e['.'].import)) || m || (type === 'module' && main);
               /* istanbul ignore if */
               if (!index)
                 throw new Error('no entry file found');
