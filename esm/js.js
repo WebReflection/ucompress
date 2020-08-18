@@ -3,7 +3,7 @@ import {platform} from 'os';
 import {basename, dirname, join, relative, resolve} from 'path';
 
 import * as mhl from 'minify-html-literals';
-import terser from 'terser';
+import {minify as terserMinify} from 'terser';
 import umap from 'umap';
 import umeta from 'umeta';
 
@@ -41,7 +41,7 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
           const js = mini ? mini.code : original;
           const module = /\.mjs$/.test(source) ||
                           /\b(?:import|export)\b/.test(js);
-          const {code, error, map} = terser.minify(
+          terserMinify(
             js,
             sourceMap ?
               {
@@ -56,13 +56,14 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
                 ...terserArgs,
                 module
               }
-          );
-          if (error)
-            throw error;
-          else
+          )
+          .then(({code, map}) => {
             res({original, code, map: sourceMap ? map : ''});
+          })
+          .catch(rej);
         }
         catch (error) {
+          /* istanbul ignore next */
           rej(error);
         }
       }

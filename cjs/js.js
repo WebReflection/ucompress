@@ -4,7 +4,7 @@ const {platform} = require('os');
 const {basename, dirname, join, relative, resolve} = require('path');
 
 const mhl = require('minify-html-literals');
-const terser = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('terser'));
+const {minify: terserMinify} = require('terser');
 const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
 const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
 
@@ -42,7 +42,7 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
           const js = mini ? mini.code : original;
           const module = /\.mjs$/.test(source) ||
                           /\b(?:import|export)\b/.test(js);
-          const {code, error, map} = terser.minify(
+          terserMinify(
             js,
             sourceMap ?
               {
@@ -57,13 +57,14 @@ const minify = (source, {noMinify, sourceMap}) => new Promise((res, rej) => {
                 ...terserArgs,
                 module
               }
-          );
-          if (error)
-            throw error;
-          else
+          )
+          .then(({code, map}) => {
             res({original, code, map: sourceMap ? map : ''});
+          })
+          .catch(rej);
         }
         catch (error) {
+          /* istanbul ignore next */
           rej(error);
         }
       }
