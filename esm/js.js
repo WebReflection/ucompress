@@ -137,13 +137,32 @@ const JS = (
             try {
               const {length} = module;
               let path = $require.resolve(module, {paths: [baseSource]});
-              let oldPath = path;
-              do path = dirname(oldPath);
-              while (
-                path !== oldPath &&
-                path.slice(-length) !== module &&
-                (oldPath = path)
-              );
+              /* istanbul ignore next */
+              if (!path.includes(module) && /(\/|\\[^ ])/.test(module)) {
+                const sep = RegExp.$1[0];
+                const source = module.split(sep);
+                const target = path.split(sep);
+                const js = source.length;
+                for (let j = 0, i = target.indexOf(source[0]); i < target.length; i++) {
+                  if (j < js && target[i] !== source[j++])
+                    target[i] = source[j - 1];
+                }
+                path = target.join(sep);
+                path = [
+                  path.slice(0, path.lastIndexOf('node_modules')),
+                  'node_modules',
+                  source[0]
+                ].join(sep);
+              }
+              else {
+                let oldPath = path;
+                do path = dirname(oldPath);
+                while (
+                  path !== oldPath &&
+                  path.slice(-length) !== module &&
+                  (oldPath = path)
+                );
+              }
               const i = path.lastIndexOf('node_modules');
               /* istanbul ignore if */
               if (i < 0)
