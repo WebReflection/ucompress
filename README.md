@@ -10,6 +10,11 @@
 A <em>micro</em>, all-in-one, compressor for common Web files, resolving automatically _JavaScript_ imports, when these are static.
 
 
+### 📣 Community Announcement
+
+Please ask questions in the [dedicated forum](https://webreflection.boards.net/) to help the community around this project grow ♥
+
+---
 
 ## As CLI
 
