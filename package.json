@@ -1,6 +1,6 @@
 {
   "name": "ucompress",
-  "version": "0.21.2",
+  "version": "0.22.0",
   "description": "A micro, all-in-one, compressor for common Web files",
   "main": "./cjs/index.js",
   "bin": "./binary.cjs",
