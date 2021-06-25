@@ -3,8 +3,8 @@ const {createHash} = require('crypto');
 const {createReadStream, stat, writeFile} = require('fs');
 const {extname} = require('path');
 
-const mime = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('mime-types'));
-const umap = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umap'));
+const mime = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('mime-types'));
+const umap = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('umap'));
 
 const {lookup} = mime;
 const {stringify} = JSON;

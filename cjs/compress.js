@@ -1,9 +1,9 @@
 'use strict';
 const {createReadStream, createWriteStream, stat} = require('fs');
 const {pipeline} = require('stream');
-const zlib = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('zlib'));
+const zlib = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('zlib'));
 
-const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
+const headers = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./headers.js'));
 
 const {
   BROTLI_MAX_QUALITY,

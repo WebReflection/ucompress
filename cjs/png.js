@@ -2,10 +2,10 @@
 const {execFile} = require('child_process');
 const {copyFile, unlink} = require('fs');
 
-const pngquant = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('pngquant-bin'));
-const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
+const pngquant = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('pngquant-bin'));
+const sharp = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('sharp'));
 
-const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
+const headers = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./headers.js'));
 
 const fit = sharp.fit.inside;
 const pngquantArgs = ['--skip-if-larger', '--speed', '1', '-f', '-o'];

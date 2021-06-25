@@ -1,10 +1,10 @@
 'use strict';
 const {readFile, writeFile} = require('fs');
 
-const csso = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('csso'));
+const csso = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('csso'));
 
-const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
-const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
+const compressed = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./compressed.js'));
+const compress = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./compress.js'));
 
 compressed.add('.css');
 

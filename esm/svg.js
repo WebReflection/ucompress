@@ -1,6 +1,6 @@
 import {readFile, writeFile} from 'fs';
 
-import SVGO from 'svgo';
+import {optimize} from 'svgo';
 
 import compressed from './compressed.js';
 import compress from './compress.js';
@@ -34,7 +34,7 @@ export default (source, dest, options = {}) =>
         if (options.noMinify)
           onSVGO({data: file});
         else
-          (new SVGO).optimize(file).then(onSVGO, rej);
+          onSVGO(optimize(file));
       }
     });
   });

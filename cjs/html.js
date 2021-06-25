@@ -1,11 +1,11 @@
 'use strict';
 const {readFile, writeFile} = require('fs');
 
-const html = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('html-minifier'));
+const html = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('html-minifier'));
 
-const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
-const compress = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compress.js'));
-const htmlArgs = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html-minifier.js'));
+const compressed = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./compressed.js'));
+const compress = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./compress.js'));
+const htmlArgs = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./html-minifier.js'));
 
 compressed.add('.htm');
 compressed.add('.html');

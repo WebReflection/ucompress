@@ -1,10 +1,10 @@
 'use strict';
 const {unlink, write, copyFile} = require('fs');
 
-const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
+const sharp = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('sharp'));
 
-const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
-const blur = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./preview.js'));
+const headers = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./headers.js'));
+const blur = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./preview.js'));
 
 const fit = sharp.fit.inside;
 const withoutEnlargement = true;

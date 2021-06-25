@@ -2,9 +2,9 @@
 const {execFile} = require('child_process');
 const {copyFile} = require('fs');
 
-const umeta = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('umeta'));
+const umeta = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('umeta'));
 
-const headers = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./headers.js'));
+const headers = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./headers.js'));
 
 const {require: cjs} = umeta(({url: require('url').pathToFileURL(__filename).href}));
 

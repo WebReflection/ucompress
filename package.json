@@ -25,13 +25,13 @@
   "author": "Andrea Giammarchi",
   "license": "ISC",
   "devDependencies": {
-    "ascjs": "^4.0.1",
+    "ascjs": "^5.0.1",
     "compression": "^1.7.4",
     "coveralls": "^3.1.0",
     "essential-md": "^0.3.1",
     "express": "^4.17.1",
     "nyc": "^15.1.0",
-    "uhtml": "^2.1.2"
+    "uhtml": "^2.7.5"
   },
   "module": "./esm/index.js",
   "type": "module",
@@ -40,15 +40,15 @@
     "default": "./cjs/index.js"
   },
   "dependencies": {
-    "csso": "^4.0.3",
+    "csso": "^4.2.0",
     "html-minifier": "^4.0.0",
-    "marked": "^1.2.0",
-    "mime-types": "^2.1.27",
-    "minify-html-literals": "^1.3.2",
+    "marked": "^2.1.2",
+    "mime-types": "^2.1.31",
+    "minify-html-literals": "^1.3.5",
     "pngquant-bin": "^6.0.0",
-    "sharp": "^0.26.1",
+    "sharp": "^0.28.3",
     "svgo": "^1.3.2",
-    "terser": "^5.3.4",
+    "terser": "^5.7.0",
     "umap": "^1.0.2",
     "umeta": "^0.2.4"
   },

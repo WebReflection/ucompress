@@ -3,18 +3,18 @@ const {stat, readdir} = require('fs');
 
 const {extname, join} = require('path');
 
-const compressed = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./compressed.js'));
-const copy = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./copy.js'));
-const css = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./css.js'));
-const gif = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./gif.js'));
-const html = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./html.js'));
-const jpg = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./jpg.js'));
-const js = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./js.js'));
-const json = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./json.js'));
-const md = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./md.js'));
-const png = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./png.js'));
-const svg = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./svg.js'));
-const xml = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('./xml.js'));
+const compressed = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./compressed.js'));
+const copy = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./copy.js'));
+const css = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./css.js'));
+const gif = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./gif.js'));
+const html = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./html.js'));
+const jpg = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./jpg.js'));
+const js = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./js.js'));
+const json = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./json.js'));
+const md = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./md.js'));
+const png = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./png.js'));
+const svg = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./svg.js'));
+const xml = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('./xml.js'));
 
 const crawl = (source, options) => new Promise((res, rej) => {
   stat(source, (err, stat) => {

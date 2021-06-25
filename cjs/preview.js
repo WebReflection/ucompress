@@ -1,7 +1,7 @@
 'use strict';
 const {extname} = require('path');
 
-const sharp = (m => m.__esModule ? /* istanbul ignore next */ m.default : /* istanbul ignore next */ m)(require('sharp'));
+const sharp = (m => /* c8 ignore start */ m.__esModule ? m.default : m /* c8 ignore stop */)(require('sharp'));
 
 module.exports = source => {
   const dest = source.replace(
